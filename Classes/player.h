@@ -1,18 +1,28 @@
-#ifndef __PLAYER_SCENE_H__
-#define __PLAYER_SCENE_H__
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
 
 #include "cocos2d.h"
 using namespace cocos2d;
 
-class player :public Sprite {
+#define init_FULLHP 100;
+
+class player {
 private:
-	Sprite* Player;
+	int FULLHP;
+	int Level;
+	int Strength;
+	int damage;
+	int defence;
 public:
-	static Sprite* createPlayer();
-	void controlPlayer();
-	//virtual bool init();
-	void OnKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
-	CREATE_FUNC(player);
+	int HP;
+	Sprite* sprite;
+	Label* label;
+	void init();
+	bool dead();
+	void test();
+	void createPlayer();
+	void createInfo();
+	void showInfo();
 };
 
-#endif
+#endif 

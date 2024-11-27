@@ -1,5 +1,6 @@
 #include "Home.h"
 #include "player.h"
+#include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
 using namespace cocos2d;
@@ -20,11 +21,13 @@ bool home::init() {
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建玩家角色
-	player1 = Sprite::create("buildings/houses.png");
-	player1->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7));
-	player1->setScale(2.5);
-	this->addChild(player1, 0);
 	
+	Brotato.createPlayer();
+	this->addChild(Brotato.sprite);
+
+	Brotato.createInfo();
+	this->addChild(Brotato.label);
+
 	//bgm
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	audio->playBackgroundMusic("bgm/BGM02.wav", true);
@@ -38,56 +41,58 @@ bool home::init() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	//每一帧调用一次角色移动函数
-	this->schedule(schedule_selector(home::move));
-	this->schedule(schedule_selector(home::move2),0.2);
+	this->schedule(schedule_selector(home::playermove));
+	this->schedule(schedule_selector(home::playermove2));
+	//this->schedule(schedule_selector(home::test));
+	this->schedule(schedule_selector(home::update_player));
 
 	return true;
 }
 
 
-void home::move(float delta) {   //键盘控制角色移动
+void home::playermove(float delta) {   //键盘控制角色移动
 	auto w = EventKeyboard::KeyCode::KEY_W;
 	auto s = EventKeyboard::KeyCode::KEY_S;
 	auto a = EventKeyboard::KeyCode::KEY_A;
 	auto d = EventKeyboard::KeyCode::KEY_D;
 	if (keyMap[w]==true) {
-		if (player1->getPositionY() <  1080)
-			player1->setPositionY(player1->getPositionY() + 10);
+		if (Brotato.sprite->getPositionY() <  1080)
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() + 10);
 	}
 	if (keyMap[a] == true) {
-		if(player1->getPositionX()>0)
-			player1->setPositionX(player1->getPositionX() - 10);
+		if(Brotato.sprite->getPositionX()>0)
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() - 10);
 	}
 	if (keyMap[s] == true) {
-		if (player1->getPositionY() > 0)
-			player1->setPositionY(player1->getPositionY() - 10);
+		if (Brotato.sprite->getPositionY() > 0)
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() - 10);
 	}
 	if (keyMap[d] == true) {
-		if (player1->getPositionX() < 1920)
-			player1->setPositionX(player1->getPositionX() + 10);
+		if (Brotato.sprite->getPositionX() < 1920)
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() + 10);
 	}
 }
 
-void home::move2(float delta) {   //键盘控制角色移动
+void home::playermove2(float delta) {   //键盘控制角色移动
 	auto i = EventKeyboard::KeyCode::KEY_I;
 	auto k = EventKeyboard::KeyCode::KEY_K;
 	auto j = EventKeyboard::KeyCode::KEY_J;
 	auto l = EventKeyboard::KeyCode::KEY_L;
 	if (keyMap[i] == true) {
-		if (player1->getPositionY() < 1080) 
-			player1->setPositionY(player1->getPositionY() + 10);
+		if (Brotato.sprite->getPositionY() < 1080)
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() + 10);
 	}
 	if (keyMap[j] == true) {
-		if (player1->getPositionX() > 0)
-			player1->setPositionX(player1->getPositionX() - 10);
+		if (Brotato.sprite->getPositionX() > 0)
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() - 10);
 	}
 	if (keyMap[k] == true) {
-		if (player1->getPositionY() > 0)
-			player1->setPositionY(player1->getPositionY() - 10);
+		if (Brotato.sprite->getPositionY() > 0)
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() - 10);
 	}
 	if (keyMap[l] == true) {
-		if (player1->getPositionX() < 1920)
-			player1->setPositionX(player1->getPositionX() + 10);
+		if (Brotato.sprite->getPositionX() < 1920)
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() + 10);
 	}
 }
 
@@ -103,5 +108,18 @@ void home::OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {  //撤销
 }
 
 
+void home::test(float delta) {
+	if (Brotato.sprite->getPositionX() > 1500)
+		Brotato.HP--;
+}
 
 
+void home::update_player(float delta) {
+	if (Brotato.sprite->getPositionX() > 1500)
+		Brotato.HP--;
+	Brotato.showInfo();
+	if (Brotato.dead()) {
+		auto scene_helloworld = HelloWorld::createScene();
+		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
+	}
+}
