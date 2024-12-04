@@ -13,16 +13,23 @@ private:
 	int Strength;
 	int damage;
 	int defence;
+	int money;
+	int range;
 public:
 	int HP;
+	int countdown;
+	int speed;
 	Sprite* sprite;
+	Sprite* enemy;
 	Label* label;
 	void init();
 	bool dead();
+	bool gameover();
 	void test();
 	void createPlayer();
 	void createInfo();
 	void showInfo();
+	void hurt();
 };
 
 #endif 

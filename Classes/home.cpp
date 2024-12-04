@@ -25,6 +25,9 @@ bool home::init() {
 	Brotato.createPlayer();
 	this->addChild(Brotato.sprite);
 
+	Brotato.test();
+	this->addChild(Brotato.enemy);
+
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
 
@@ -44,7 +47,8 @@ bool home::init() {
 	this->schedule(schedule_selector(home::playermove));
 	this->schedule(schedule_selector(home::playermove2));
 	//this->schedule(schedule_selector(home::test));
-	this->schedule(schedule_selector(home::update_player));
+	this->schedule(schedule_selector(home::update_per_frame));
+	this->schedule(schedule_selector(home::update_per_second), 1);
 
 	return true;
 }
@@ -57,19 +61,19 @@ void home::playermove(float delta) {   //¼üÅÌ¿ØÖÆ½ÇÉ«ÒÆ¶¯
 	auto d = EventKeyboard::KeyCode::KEY_D;
 	if (keyMap[w]==true) {
 		if (Brotato.sprite->getPositionY() <  1080)
-			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() + 10);
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() + Brotato.speed);
 	}
 	if (keyMap[a] == true) {
 		if(Brotato.sprite->getPositionX()>0)
-			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() - 10);
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() - Brotato.speed);
 	}
 	if (keyMap[s] == true) {
 		if (Brotato.sprite->getPositionY() > 0)
-			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() - 10);
+			Brotato.sprite->setPositionY(Brotato.sprite->getPositionY() - Brotato.speed);
 	}
 	if (keyMap[d] == true) {
 		if (Brotato.sprite->getPositionX() < 1920)
-			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() + 10);
+			Brotato.sprite->setPositionX(Brotato.sprite->getPositionX() + Brotato.speed);
 	}
 }
 
@@ -114,12 +118,19 @@ void home::test(float delta) {
 }
 
 
-void home::update_player(float delta) {
-	if (Brotato.sprite->getPositionX() > 1500)
-		Brotato.HP--;
+void home::update_per_frame(float delta) {
+	Brotato.hurt();
 	Brotato.showInfo();
 	if (Brotato.dead()) {
 		auto scene_helloworld = HelloWorld::createScene();
 		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
 	}
+	if (Brotato.gameover()) {
+		auto scene_helloworld = home::createScene();
+		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
+	}
+}
+
+void home::update_per_second(float delta) {
+	Brotato.countdown--;
 }

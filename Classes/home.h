@@ -19,7 +19,8 @@ public:
 	void playermove(float delta);
 	void playermove2(float delta);
 
-	void update_player(float delta);
+	void update_per_frame(float delta);
+	void update_per_second(float delta);
 
 	void test(float delta);
 

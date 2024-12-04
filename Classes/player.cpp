@@ -1,23 +1,40 @@
 #include "cocos2d.h"
 #include "player.h"
 #include <string>
+#include <cmath>
 using namespace cocos2d;
 using namespace std;
 
+float distance(float x1, float y1, float x2, float y2) {
+	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
 
 void player::test() {
-	//sprite->setPositionY(sprite->getPositionY() + 10);
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	enemy = Sprite::create("buildings/houses.png");
+	enemy->setPosition(Vec2(origin.x + visibleSize.width / 3, origin.y + visibleSize.height * 0.3));
+	enemy->setScale(2.5);
 }
 
 void player::init() {
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-
+	countdown = 20;
+	speed = 10;
 }
 
 bool player::dead() {
 	if (HP <= 0) 
+		return true;
+	else
+		return false;
+}
+
+
+bool player::gameover() {
+	if (countdown <= 0)
 		return true;
 	else
 		return false;
@@ -35,10 +52,15 @@ void player::createPlayer() {
 void player::createInfo() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level), "fonts/Marker Felt.ttf", 40);
+	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown), "fonts/Marker Felt.ttf", 40);
 	label->setPosition(Vec2(origin.x + visibleSize.width * 0.05, origin.y + visibleSize.height * 0.9));
 }
 
 void player::showInfo() {
-	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level));
+	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown));
+}
+
+void player::hurt() {
+	if (distance(sprite->getPositionX(), sprite->getPositionY(), enemy->getPositionX(), enemy->getPositionY()) < 100)
+		HP--;
 }
