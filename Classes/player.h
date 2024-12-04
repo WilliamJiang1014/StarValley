@@ -15,6 +15,7 @@ private:
 	int defence;
 	int money;
 	int range;
+
 public:
 	int HP;
 	int countdown;
@@ -29,7 +30,7 @@ public:
 	void createPlayer();
 	void createInfo();
 	void showInfo();
-	void hurt();
+	void hurt(int total_damage);
 };
 
 #endif 

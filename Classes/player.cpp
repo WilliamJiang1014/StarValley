@@ -5,9 +5,7 @@
 using namespace cocos2d;
 using namespace std;
 
-float distance(float x1, float y1, float x2, float y2) {
-	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-}
+
 
 void player::test() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -60,7 +58,6 @@ void player::showInfo() {
 	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown));
 }
 
-void player::hurt() {
-	if (distance(sprite->getPositionX(), sprite->getPositionY(), enemy->getPositionX(), enemy->getPositionY()) < 100)
-		HP--;
+void player::hurt(int total_damage) {
+	HP -= total_damage;
 }

@@ -119,7 +119,7 @@ void home::test(float delta) {
 
 
 void home::update_per_frame(float delta) {
-	Brotato.hurt();
+	Brotato.hurt(1);
 	Brotato.showInfo();
 	if (Brotato.dead()) {
 		auto scene_helloworld = HelloWorld::createScene();
