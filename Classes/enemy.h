@@ -4,26 +4,36 @@
 #include <cocos2d.h>
 using namespace cocos2d;
 
-class enemylist;
+class List;
 
 class enemy {
-	friend class enemylist;
+	friend class List;
 private:
 	float x, y;  
 	float player_x, player_y;
+	float direction_x, direction_y;
+	int speed;
 	int damage;
 	enemy* link;
 public:
 	Sprite* sprite;
+	enemy(enemy* l);
+	void move();
 };
 
-class enemylist {
+
+class List {
 private:
 	enemy* first, * last;
 public:
-	void set_playerlocation(float x,float y);
-	void set_mylocation();
-	int attack();
+	List();
+	void update(float x, float y);
+	void update_playerlocation(float x,float y);  //记录玩家的位置
+	void update_mylocation();  //记录自己的位置
+	int hit_damage();  //计算对玩家造成的伤害
+	Sprite* generate_enemy();  //生成敌人
+	void update_direction();
+	void move();
 };
 
 

@@ -19,7 +19,7 @@ void player::init() {
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-	countdown = 20;
+	countdown = 30;
 	speed = 10;
 }
 

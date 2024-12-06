@@ -1,5 +1,6 @@
 #include "Home.h"
 #include "player.h"
+#include "enemy.h"
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
@@ -9,7 +10,7 @@ Scene* home::createScene() {
 	return home::create();
 }
 
-bool home::init() {
+bool home::init() {  //主函数
 
 	if (!Scene::init())
 	{
@@ -25,8 +26,8 @@ bool home::init() {
 	Brotato.createPlayer();
 	this->addChild(Brotato.sprite);
 
-	Brotato.test();
-	this->addChild(Brotato.enemy);
+	//Brotato.test();
+	//this->addChild(Brotato.enemy);
 
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
@@ -49,6 +50,7 @@ bool home::init() {
 	//this->schedule(schedule_selector(home::test));
 	this->schedule(schedule_selector(home::update_per_frame));
 	this->schedule(schedule_selector(home::update_per_second), 1);
+	this->schedule(schedule_selector(home::generate_enemy), 5);
 
 	return true;
 }
@@ -112,15 +114,20 @@ void home::OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {  //撤销
 }
 
 
-void home::test(float delta) {
+void home::test(float delta) {  //测试函数，无用
 	if (Brotato.sprite->getPositionX() > 1500)
 		Brotato.HP--;
 }
 
 
-void home::update_per_frame(float delta) {
-	Brotato.hurt(1);
+void home::update_per_frame(float delta) {   //所有每帧都要做的操作
+	
+	Brotato.hurt(enemylist.hit_damage());
 	Brotato.showInfo();
+
+	enemylist.update(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
+	enemylist.move();
+
 	if (Brotato.dead()) {
 		auto scene_helloworld = HelloWorld::createScene();
 		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
@@ -131,6 +138,15 @@ void home::update_per_frame(float delta) {
 	}
 }
 
-void home::update_per_second(float delta) {
+void home::update_per_second(float delta) {  //所有每秒都要做的操作
 	Brotato.countdown--;
+	//Brotato.hurt(enemylist.hit_damage());
+	//Brotato.showInfo();
+}
+
+
+
+void home::generate_enemy(float delta) {  //生成敌人
+	this->addChild(enemylist.generate_enemy());
+	Brotato.hurt(-1);
 }

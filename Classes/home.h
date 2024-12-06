@@ -3,11 +3,13 @@
 
 #include "cocos2d.h"
 #include "player.h"
+#include "enemy.h"
 using namespace cocos2d;
 
 class home :public Scene {
 private:
 	player Brotato;
+	List enemylist;
 	std::map<EventKeyboard::KeyCode, bool> keyMap;
 public:
 	static Scene* createScene();
@@ -21,6 +23,8 @@ public:
 
 	void update_per_frame(float delta);
 	void update_per_second(float delta);
+
+	void generate_enemy(float delta);
 
 	void test(float delta);
 
