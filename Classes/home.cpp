@@ -1,6 +1,7 @@
 #include "Home.h"
 #include "player.h"
 #include "enemy.h"
+#include "battle.h"
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
@@ -17,6 +18,16 @@ bool home::init() {  //主函数
 		return false;
 	}
 
+	b = battle::create();
+	this->addChild(b);
+
+	this->schedule(schedule_selector(home::test));
+
+	//Layer* layer_battle = battle::createlayer();
+	//this->addChild(layer_battle);
+
+
+	/*
 	//获取窗口大小
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -31,6 +42,11 @@ bool home::init() {  //主函数
 
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
+
+	battle = Layer::create();
+	battle->addChild(Brotato.sprite);
+	battle->addChild(Brotato.label);
+	this->addChild(battle);
 
 	//bgm
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
@@ -47,15 +63,34 @@ bool home::init() {  //主函数
 	//每一帧调用一次角色移动函数
 	this->schedule(schedule_selector(home::playermove));
 	this->schedule(schedule_selector(home::playermove2));
-	//this->schedule(schedule_selector(home::test));
+	this->schedule(schedule_selector(home::test, 7));
 	this->schedule(schedule_selector(home::update_per_frame));
 	this->schedule(schedule_selector(home::update_per_second), 1);
 	this->schedule(schedule_selector(home::generate_enemy), 5);
-
+	*/
 	return true;
 }
 
+void home::test(float delta) {  //测试函数，无用
+	//if (b->gameover()) 
+		//this->addChild(b);
+	if (b->dead()) {
+		b->setVisible(false);
+		/*
+		this->removeChild(b);
+		Layer* l = Layer::create();
+		auto visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		auto s = Sprite::create("buildings/houses.png");
+		s->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7));
+		s->setScale(2.5);
+		l->addChild(s);
+		this->addChild(l);
+		*/
+	}
+}
 
+/*
 void home::playermove(float delta) {   //键盘控制角色移动
 	auto w = EventKeyboard::KeyCode::KEY_W;
 	auto s = EventKeyboard::KeyCode::KEY_S;
@@ -115,8 +150,12 @@ void home::OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {  //撤销
 
 
 void home::test(float delta) {  //测试函数，无用
-	if (Brotato.sprite->getPositionX() > 1500)
-		Brotato.HP--;
+	Layer* l = Layer::create();
+	auto s = Sprite::create("buildings/houses.png");
+	s->setPosition(Brotato.countdown * 50, Brotato.countdown * 30);
+	s->setScale(4);
+	l->addChild(s);
+	this->addChild(l);
 }
 
 
@@ -133,8 +172,9 @@ void home::update_per_frame(float delta) {   //所有每帧都要做的操作
 		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
 	}
 	if (Brotato.gameover()) {
-		auto scene_helloworld = home::createScene();
-		Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
+		//auto scene_helloworld = home::createScene();
+		//Director::getInstance()->replaceScene(CCTransitionFade::create(0.8f, scene_helloworld));
+		this->removeChild(battle);
 	}
 }
 
@@ -147,6 +187,7 @@ void home::update_per_second(float delta) {  //所有每秒都要做的操作
 
 
 void home::generate_enemy(float delta) {  //生成敌人
-	this->addChild(enemylist.generate_enemy());
+	battle->addChild(enemylist.generate_enemy());
 	Brotato.hurt(-1);
 }
+*/
