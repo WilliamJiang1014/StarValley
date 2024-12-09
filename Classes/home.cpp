@@ -82,6 +82,7 @@ void home::endCSL(float delta) {
 		this->removeChild(CSL);
 		b = battle::create();
 		this->addChild(b);
+		this->unschedule(schedule_selector(home::endCSL));
 	}
 }
 
