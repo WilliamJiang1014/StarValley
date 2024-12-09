@@ -13,6 +13,7 @@ bool battle::init() {
 	{
 		return false;
 	}
+	int wave = 1;
 
 	//创建玩家角色
 	Brotato.createPlayer();
@@ -32,10 +33,11 @@ bool battle::init() {
 	listener->onKeyReleased = CC_CALLBACK_2(battle::OnKeyReleased, this);
 	this ->schedule(schedule_selector(battle::playermove));
 	this->schedule(schedule_selector(battle::playermove2));
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
 	this->schedule(schedule_selector(battle::update_per_frame));
 	this->schedule(schedule_selector(battle::update_per_second), 1);
 	this->schedule(schedule_selector(battle::generate_enemy), 5);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
 }
@@ -127,16 +129,47 @@ void battle::generate_enemy(float delta) {  //生成敌人
 	Brotato.hurt(-1);
 }
 
-bool battle::gameover() {
+// 波结束
+bool battle::gameover() 
+{
 	if (Brotato.gameover())
+	{
+		wave++;
+		Brotato.totalTime += 10;
+		Brotato.countdown = Brotato.totalTime;
+		return true;
+	}
+	else
+		return false;
+}
+
+// 局结束
+int battle::totalOver()
+{
+	if (Brotato.dead()) // 角色死亡
+	{
+		return -1;
+	}
+	else if (wave == 10) // 战斗结束
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+bool battle::dead() 
+{
+	if (Brotato.dead())
 		return true;
 	else
 		return false;
 }
 
-bool battle::dead() {
-	if (Brotato.dead())
-		return true;
-	else
-		return false;
+player* battle::getPlayer()
+{
+	player* p = &Brotato;
+	return p;
 }

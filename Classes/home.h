@@ -6,6 +6,8 @@
 #include "enemy.h"
 #include "CharacterSelectLayer.h"
 #include "battle.h"
+#include "GameOverLayer.h"
+#include "ShopLayer.h"
 
 using namespace cocos2d;
 
@@ -13,6 +15,8 @@ class home :public Scene {
 private:
 	battle* b;
 	CharacterSelectLayer* CSL;
+	ShopLayer* shopLayer;
+	GameOverLayer* gameOverLayer;
 	//player Brotato;
 	//List enemylist;
 	//std::map<EventKeyboard::KeyCode, bool> keyMap;
@@ -23,7 +27,11 @@ public:
 
 	void test(float delta);
 	void endCSL(float delta);
+	void endWave(float delta);
+	void endShop(float delta);
 
+	void endGame(float delta);
+	void retryGame(float delta);
 	/*
 	void OnKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);

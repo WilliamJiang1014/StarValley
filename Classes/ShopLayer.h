@@ -9,15 +9,20 @@ USING_NS_CC;
 class ShopLayer : public Layer
 {
 private:
-	Player* player;   // 玩家对象
-	void closeShop(); // 关闭商店界面
+	player* p;   // 玩家对象
+	bool end;
+
 public:
 	// 自定义创建场景函数，传入 player 参数
-	static Scene* createScene(Player* player);
+	static Scene* createScene(player* p);
 	// 自定义初始化函数
-	static ShopLayer* create(Player* player);
+	static ShopLayer* create(player* p);
 	// 初始化函数
-	virtual bool init(Player* player);
+	virtual bool init(player* p);
+
+	// 初始化商店界面
+	void createShopUI();
+	bool toEnd();
 };
 
 

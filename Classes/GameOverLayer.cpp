@@ -4,7 +4,7 @@
 
 USING_NS_CC;
 
-Scene* GameOverLayer::createScene(bool playerWon)
+Scene* GameOverLayer::createScene(int playerWon)
 {
 	auto scene = Scene::create();
 	auto layer = GameOverLayer::create(playerWon);
@@ -14,7 +14,7 @@ Scene* GameOverLayer::createScene(bool playerWon)
 	return scene;
 }
 
-GameOverLayer* GameOverLayer::create(bool playerWon)
+GameOverLayer* GameOverLayer::create(int playerWon)
 {
 	GameOverLayer* layer = new GameOverLayer();
 	if (layer && layer->init(playerWon))
@@ -26,45 +26,38 @@ GameOverLayer* GameOverLayer::create(bool playerWon)
 	return nullptr;
 }
 
-bool GameOverLayer::init(bool playeWon)
+bool GameOverLayer::init(int playeWon)
 {
 	if (!Layer::init())
 	{
 		return false;
 	}
+	end = false;
+
 	auto winSize = Director::getInstance()->getWinSize();
 
 	// 创建结算label
-	auto label = Label::createWithTTF(playeWon ? "You Win!" : "You Lose!", "fonts/Marker Felt.ttf", 24);
+	auto label = Label::createWithTTF(playeWon == 1 ? "You Win!" : "You Lose!", "fonts/Marker Felt.ttf", 24);
 	label->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(label);
 	
 	// 创建按钮
-	auto retryButton = ui::Button::create("normal_image.png", "selected_image.png", "disabled_image.png");
-
+	auto retryButton = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
 	retryButton->setTitleText("Retry");
 	retryButton->setTitleFontSize(24);
-
-	retryButton->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 50));
-
-	retryButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
-		switch (type) 
+	retryButton->setPosition(Vec2(winSize.width - 50, winSize.height - 50));
+	retryButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type)
 		{
-		case ui::Widget::TouchEventType::BEGAN:
-			break;
-		case ui::Widget::TouchEventType::ENDED:
-			// 按下按钮后，返回到角色选择界面
-			Director::getInstance()->replaceScene(CharacterSelectLayer::createScene());
-			break;
-		default:
-			break;
-		}
+			if (type == ui::Widget::TouchEventType::ENDED)
+			{
+				end = true;
+			}
 		});
-
-	// 添加按钮到当前层
 	this->addChild(retryButton);
 
 	return true;
 }
+
+bool GameOverLayer::toEnd() { return end; }
 
 

@@ -6,20 +6,15 @@ USING_NS_CC;
 
 class GameOverLayer : public Layer 
 {
+private:
+    bool end;
+
 public:
-    static Scene* createScene(bool playerWon);
-    static GameOverLayer* create(bool playerWon);
-    virtual bool init(bool playerWon);
+    static Scene* createScene(int playerWon);
+    static GameOverLayer* create(int playerWon);
+    virtual bool init(int playerWon);
+
+    bool toEnd();
 };
-
-
-
-
-
-
-
-
-
-
 
 #endif

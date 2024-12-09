@@ -8,6 +8,7 @@ using namespace cocos2d;
 
 class battle :public Layer {
 private:
+	int wave;
 	player Brotato;
 	List enemylist;
 	std::map<EventKeyboard::KeyCode, bool> keyMap;
@@ -27,6 +28,11 @@ public:
 
 	bool gameover();
 	bool dead();
+
+	int totalOver();
+
+	// ªÒ»°
+	player* getPlayer();
 
 	CREATE_FUNC(battle);
 };

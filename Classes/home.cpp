@@ -1,8 +1,9 @@
-#include "Home.h"
+#include "home.h"
 #include "player.h"
 #include "enemy.h"
 #include "battle.h"
 #include "CharacterSelectLayer.h"
+#include "ShopLayer.h"
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
@@ -25,7 +26,6 @@ bool home::init() {  //主函数
 	
 	//b = battle::create();
 	//this->addChild(b);
-
 	//this->schedule(schedule_selector(home::test));
 
 	//Layer* layer_battle = battle::createlayer();
@@ -77,12 +77,72 @@ bool home::init() {  //主函数
 }
 
 
-void home::endCSL(float delta) {
-	if (CSL->end == false) {
+void home::endCSL(float delta) 
+{
+	if (CSL->end == false) 
+	{
 		this->removeChild(CSL);
 		b = battle::create();
 		this->addChild(b);
 		this->unschedule(schedule_selector(home::endCSL));
+		this->schedule(schedule_selector(home::endWave));
+
+	}
+}
+
+void home::endWave(float delta)
+{
+	if (b->totalOver() != 0)
+	{
+		this->removeChild(b);
+		gameOverLayer = GameOverLayer::create(b->totalOver());
+		this->addChild(gameOverLayer);
+		this->unschedule(schedule_selector(home::endWave));
+		this->schedule(schedule_selector(home::retryGame));
+	}
+	else if (b->gameover())
+	{
+		b->setVisible(false);
+		shopLayer = ShopLayer::create(b->getPlayer());
+		this->addChild(shopLayer);
+		this->unschedule(schedule_selector(home::endWave));
+		this->schedule(schedule_selector(home::endShop));
+	}
+}
+
+void home::endShop(float delta)
+{
+	if (shopLayer->toEnd() == true)
+	{
+		this->removeChild(shopLayer);
+		b->setVisible(true);
+
+		this->unschedule(schedule_selector(home::endShop));
+		this->schedule(schedule_selector(home::endWave));
+	}
+}
+
+void home::endGame(float delta)
+{
+	if (!b->totalOver())
+	{
+		this->removeChild(b);
+		gameOverLayer = GameOverLayer::create(b->totalOver());
+		this->addChild(gameOverLayer);
+		this->unschedule(schedule_selector(home::endGame));
+		this->schedule(schedule_selector(home::retryGame));
+	}
+}
+
+void home::retryGame(float delta)
+{
+	if (gameOverLayer->toEnd())
+	{
+		this->removeChild(gameOverLayer);
+		CSL = CharacterSelectLayer::create();
+		this->addChild(CSL);
+		this->unschedule(schedule_selector(home::retryGame));
+		this->schedule(schedule_selector(home::endCSL));
 	}
 }
 

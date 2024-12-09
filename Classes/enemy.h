@@ -9,7 +9,7 @@ class List;
 class enemy {
 	friend class List;
 private:
-	float x, y;  
+	float x, y;
 	float player_x, player_y;
 	float direction_x, direction_y;
 	int speed;
