@@ -1,5 +1,5 @@
 #include "CharacterSelectLayer.h"
-#include "GameLayer.h"
+//#include "GameLayer.h"
 #include "ui/CocosGUI.h"
 
 USING_NS_CC;
@@ -21,13 +21,14 @@ bool CharacterSelectLayer::init()
 		return false;
 	}
 
+	
 	auto winSize = Director::getInstance()->getWinSize();
 
 	// 添加五个角色选择按钮
 	for (int i = 0; i < 5; i++)
 	{
 		// 创建按钮，设置正常状态、选中状态和禁用状态的图片
-		auto button = ui::Button::create("normal_iamge.png", "selected_image.png", "disabled_image.png");
+		auto button = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
 
 		// 设置按钮文本
 		char buttonText[16];
@@ -44,6 +45,7 @@ bool CharacterSelectLayer::init()
 			{
 				// 调用角色选择的处理逻辑
 				this->SelectCharacter(i);
+				end = false;
 			}
 
 			});
@@ -58,6 +60,6 @@ void CharacterSelectLayer::SelectCharacter(int characterIndex)
 {
 	// 将所选角色信息传递给 GameLayer
 	UserDefault::getInstance()->setIntegerForKey("SelectedCharacter", characterIndex); // 保存所选择的角色索引
-	auto scene = GameLayer::createScene();
-	Director::getInstance()->replaceScene(scene);
+	//auto scene = GameLayer::createScene();
+	//Director::getInstance()->replaceScene(scene);
 }

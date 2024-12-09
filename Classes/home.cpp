@@ -2,6 +2,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "battle.h"
+#include "CharacterSelectLayer.h"
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
@@ -18,10 +19,14 @@ bool home::init() {  //主函数
 		return false;
 	}
 
-	b = battle::create();
-	this->addChild(b);
+	CSL = CharacterSelectLayer::create();
+	this->addChild(CSL);
+	this->schedule(schedule_selector(home::endCSL));
+	
+	//b = battle::create();
+	//this->addChild(b);
 
-	this->schedule(schedule_selector(home::test));
+	//this->schedule(schedule_selector(home::test));
 
 	//Layer* layer_battle = battle::createlayer();
 	//this->addChild(layer_battle);
@@ -69,6 +74,15 @@ bool home::init() {  //主函数
 	this->schedule(schedule_selector(home::generate_enemy), 5);
 	*/
 	return true;
+}
+
+
+void home::endCSL(float delta) {
+	if (CSL->end == false) {
+		this->removeChild(CSL);
+		b = battle::create();
+		this->addChild(b);
+	}
 }
 
 void home::test(float delta) {  //测试函数，无用
