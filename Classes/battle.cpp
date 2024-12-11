@@ -38,6 +38,7 @@ bool battle::init() {
 	this->schedule(schedule_selector(battle::update_per_frame));
 	this->schedule(schedule_selector(battle::update_per_second), 1);
 	this->schedule(schedule_selector(battle::generate_enemy), 5);
+	this->schedule(schedule_selector(battle::generate_bullet), 4);
 
 	return true;
 }
@@ -98,7 +99,7 @@ void battle::OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {  //撤
 
 void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 
-	Brotato.hurt(enemylist.hit_damage());
+	//Brotato.hurt(enemylist.hit_damage());
 	Brotato.showInfo();
 
 	enemylist.update(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
@@ -120,14 +121,29 @@ void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 
 void battle::update_per_second(float delta) {  //所有每秒都要做的操作
 	Brotato.countdown--;
+	Brotato.hurt(enemylist.hit_damage());
 	//Brotato.hurt(enemylist.hit_damage());
 	//Brotato.showInfo();
 }
 
 void battle::generate_enemy(float delta) {  //生成敌人
 	this->addChild(enemylist.generate_enemy());
-	Brotato.hurt(-1);
+	//Brotato.hurt(-1);
 }
+
+void battle::generate_bullet(float delta) {  //远程敌人攻击生成子弹
+	enemylist.generate_bullet();
+	Sprite* p;
+	for (int i = 0; i < 100; i++) {
+		p = enemylist.newBullet[i];
+		if (p == NULL)
+			break;
+		else
+			this->addChild(p);
+	}
+}
+
+
 
 // 波结束
 bool battle::gameover() 

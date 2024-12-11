@@ -25,6 +25,7 @@ public:
 	void update_per_second(float delta);
 
 	void generate_enemy(float delta);
+	void generate_bullet(float delta);
 
 	bool gameover();
 	bool dead();

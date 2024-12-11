@@ -22,7 +22,7 @@ void player::init()
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-    totalTime = 5;
+    totalTime = 30;
     countdown = totalTime;
 	speed = 10;
 	Strength = 10;
