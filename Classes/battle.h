@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "player.h"
 #include "enemy.h"
+#include "weapon.h"
 using namespace cocos2d;
 
 class battle :public Layer {
@@ -11,6 +12,7 @@ private:
 	int wave;
 	player Brotato;
 	List enemylist;
+	Weapon weapon1, weapon2, weapon3, weapon4, weapon5, weapon6;
 	std::map<EventKeyboard::KeyCode, bool> keyMap;
 public:
 	Layer* createlayer();
@@ -23,6 +25,12 @@ public:
 
 	void update_per_frame(float delta);
 	void update_per_second(float delta);
+	void update_per_attack1(float delta);
+	void update_per_attack2(float delta);
+	void update_per_attack3(float delta);
+	void update_per_attack4(float delta);
+	void update_per_attack5(float delta);
+	void update_per_attack6(float delta);
 
 	void generate_enemy(float delta);
 	void generate_bullet(float delta);
