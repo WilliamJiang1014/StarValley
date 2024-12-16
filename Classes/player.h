@@ -13,20 +13,20 @@ class player
 private:
 	int FULLHP;
 	int Level;
+	int Strength;
+	int damage;
 	//int defence;
 	int money;
+	int range;
 
 	// new
+	float attackSpeed;       // 攻击速度（每秒攻击次数）
 	float lifeRegen;         // 每秒生命恢复量
 	int experience;          // 当前经验值
 	float regenCooldown;     // 生命恢复冷却时间（内部计时器）
 
 
 public:
-	int Strength;
-	int damage;
-	int range;
-	float attackSpeed;       // 攻击速度（每秒攻击次数）
 	int HP;
 	int countdown;
 	int totalTime;
