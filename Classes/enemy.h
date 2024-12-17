@@ -3,7 +3,6 @@
 
 #include <cocos2d.h>
 using namespace cocos2d;
-//定义敌人类型
 #define FIGHTER 1
 #define ARCHER 2
 #define ELITE 3
@@ -20,10 +19,11 @@ private:
 	float direction_x, direction_y;
 	int speed;
 	int damage;
+	int HP;
 	enemy* link;
 public:
 	Sprite* sprite;
-	enemy(float myX, float myY, float playerX, float playerY, enemy* l,int Type);
+	enemy(float myX, float myY, float playerX, float playerY, enemy* l, int Type);
 	void move();
 };
 
@@ -40,9 +40,11 @@ public:
 	int hit_damage();  //计算对玩家造成的伤害
 	Sprite* generate_enemy();  //生成敌人
 	Sprite* newBullet[100];
-	void generate_bullet();  //远程敌人攻击生成子弹
+	void generate_bullet();
 	void update_direction();
 	void move();
+	float nearestDistance();
+	void hurt(int range, int damage);
 };
 
 
