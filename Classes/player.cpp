@@ -148,12 +148,12 @@ void player::createPlayer() {
 void player::createInfo() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown), "fonts/Marker Felt.ttf", 40);
+	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown) + "\n"+"Money: " + to_string(money), "fonts/Marker Felt.ttf", 40);
 	label->setPosition(Vec2(origin.x + visibleSize.width * 0.05, origin.y + visibleSize.height * 0.9));
 }
 
 void player::showInfo() {
-	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown));
+	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown)+ "\n" + "Money: " + to_string(money));
 }
 
 void player::hurt(int total_damage) {

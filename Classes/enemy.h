@@ -2,6 +2,7 @@
 #define __ENEMY_H__
 
 #include <cocos2d.h>
+#include <vector>
 using namespace cocos2d;
 #define FIGHTER 1
 #define ARCHER 2
@@ -13,6 +14,7 @@ class List;
 class enemy {
 	friend class List;
 private:
+	bool dead;
 	int enemyType;
 	float x, y;
 	float player_x, player_y;
@@ -27,10 +29,22 @@ public:
 	void move();
 };
 
+class coin {
+	friend class List;
+private:
+	bool collected;
+	bool newGenerated;
+	coin* link;
+	float coinX, coinY;
+public:
+	Sprite* coinSprite;
+	coin(float x, float y, coin* next);
+};
 
 class List {
 private:
 	enemy* first, * last;
+	coin* coinFirst, * coinLast;
 	float playerX, playerY;
 public:
 	List();
@@ -40,11 +54,16 @@ public:
 	int hit_damage();  //计算对玩家造成的伤害
 	Sprite* generate_enemy();  //生成敌人
 	Sprite* newBullet[100];
+	Sprite* newCoin[100];
 	void generate_bullet();
 	void update_direction();
 	void move();
 	float nearestDistance();
 	void hurt(int range, int damage);
+
+	int collectCoin();
+
+	void clear();
 };
 
 

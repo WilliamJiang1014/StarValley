@@ -27,6 +27,7 @@ int randType() {
 
 enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int Type) {
 	//初始化参数
+	dead = false;
 	x = myX;
 	y = myY;
 	player_x = playerX;
@@ -42,37 +43,49 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 	//生成敌人sprite
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	if (enemyType == FIGHTER) {
+		x = rand() % int(visibleSize.width);
+		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/bruiser.png");
-		sprite->setPosition(rand() % int(visibleSize.width), rand() % int(visibleSize.height));
+		sprite->setPosition(x, y);
 		sprite->setScale(1);
 	}
 	else if (enemyType == ARCHER) {
+		x = rand() % int(visibleSize.width);
+		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/baby_alien.png");
-		sprite->setPosition(rand() % int(visibleSize.width), rand() % int(visibleSize.height));
+		sprite->setPosition(x, y);
 		sprite->setScale(1);
 	}
 	else if (enemyType == ELITE) {
+		x = rand() % int(visibleSize.width);
+		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/buffer.png");
-		sprite->setPosition(rand() % int(visibleSize.width), rand() % int(visibleSize.height));
+		sprite->setPosition(x, y);
 		sprite->setScale(1);
 	}
 	else {
-		sprite = Sprite::create("enemy/HelloWorld.png");
+		sprite = Sprite::create("enemy/archerBullet.png");
 		sprite->setPosition(myX, myY);
-		sprite->setScale(0.3);
+		sprite->setScale(1);
 	}
 }
 
 void enemy::move() {
-	sprite->setPositionX(sprite->getPositionX() + speed * direction_x);
-	sprite->setPositionY(sprite->getPositionY() + speed * direction_y);
+	if (!dead) {
+		sprite->setPositionX(sprite->getPositionX() + speed * direction_x);
+		sprite->setPositionY(sprite->getPositionY() + speed * direction_y);
+	}
 }
 
 List::List() {
 	last = new enemy(-1, -1, -1, -1, NULL, -1);
 	first = new enemy(-1, -1, -1, -1, last, -1);
+	coinLast = new coin(-1, -1, NULL);
+	coinFirst = new coin(-1, -1, coinLast);
 	for (int i = 0; i < 100; i++)
 		newBullet[i] = NULL;
+	for (int i = 0; i < 100; i++)
+		newCoin[i] = NULL;
 }
 
 void List::update(float x, float y) {
@@ -86,8 +99,10 @@ void List::update_playerlocation(float x, float y) {  //记录玩家的位置
 	playerY = y;
 	enemy* p = first->link;
 	while (p != last) {
-		p->player_x = x;
-		p->player_y = y;
+		if (!p->dead) {
+			p->player_x = x;
+			p->player_y = y;
+		}
 		p = p->link;
 	}
 }
@@ -95,8 +110,10 @@ void List::update_playerlocation(float x, float y) {  //记录玩家的位置
 void List::update_mylocation() {  //记录自己的位置
 	enemy* p = first->link;
 	while (p != last) {
-		p->x = p->sprite->getPositionX();
-		p->y = p->sprite->getPositionY();
+		if (!p->dead) {
+			p->x = p->sprite->getPositionX();
+			p->y = p->sprite->getPositionY();
+		}
 		p = p->link;
 	}
 }
@@ -104,17 +121,19 @@ void List::update_mylocation() {  //记录自己的位置
 void List::update_direction() {
 	enemy* p = first->link;
 	while (p != last) {
-		//单位化每个方向向量
-		if (p->enemyType != BULLET) {
-			int X = p->player_x - p->x;
-			int Y = p->player_y - p->y;
-			if (X == 0 && Y == 0) {
-				p->direction_x = 0.6;
-				p->direction_y = 0.6;
-			}
-			else {
-				p->direction_x = X / (sqrt(X * X + Y * Y));
-				p->direction_y = Y / (sqrt(X * X + Y * Y));
+		if (!p->dead) {
+			if (p->enemyType != BULLET) {
+				int X = p->player_x - p->x;
+				int Y = p->player_y - p->y;
+				if (X == 0 && Y == 0) {
+					p->direction_x = 0.6;
+					p->direction_y = 0.6;
+				}
+				else {
+					//单位化每个方向向量
+					p->direction_x = X / (sqrt(X * X + Y * Y));
+					p->direction_y = Y / (sqrt(X * X + Y * Y));
+				}
 			}
 		}
 		p = p->link;
@@ -125,10 +144,12 @@ int List::hit_damage() {  //计算对玩家造成的伤害
 	int total_damage = 0;
 	enemy* p = first->link;
 	while (p != last) {
-		if (p->enemyType == FIGHTER || p->enemyType == BULLET) {
-			if (distance(p->x, p->y, p->player_x, p->player_y) < 60) {
-				total_damage += p->damage;
-				//p->sprite->setVisible(false);
+		if (!p->dead) {
+			if (p->enemyType == FIGHTER || p->enemyType == BULLET) {
+				if (distance(p->x, p->y, p->player_x, p->player_y) < 60) {
+					total_damage += p->damage;
+					//p->sprite->setVisible(false);
+				}
 			}
 		}
 		p = p->link;
@@ -148,76 +169,79 @@ void List::generate_bullet() {
 	int pos = 0;
 	enemy* p = first->link;
 	while (p != last) {
-		if (p->enemyType == ARCHER) {
-			enemy* new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			//?趨???????
-			int X = p->player_x - p->x;
-			int Y = p->player_y - p->y;
-			new_enemy->direction_x = X / (sqrt(X * X + Y * Y));
-			new_enemy->direction_y = Y / (sqrt(X * X + Y * Y));
+		if (!p->dead) {
+			if (p->enemyType == ARCHER) {
+				enemy* new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				//确定子弹行进方向
+				int X = p->player_x - p->x;
+				int Y = p->player_y - p->y;
+				new_enemy->direction_x = X / (sqrt(X * X + Y * Y));
+				new_enemy->direction_y = Y / (sqrt(X * X + Y * Y));
 
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+			}
+			if (p->enemyType == ELITE) {
+				enemy* new_enemy;
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = 0.6;
+				new_enemy->direction_y = 0.6;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = 0.6;
+				new_enemy->direction_y = -0.6;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = -0.6;
+				new_enemy->direction_y = 0.6;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = -0.6;
+				new_enemy->direction_y = -0.6;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = 0;
+				new_enemy->direction_y = 0.85;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = 0.85;
+				new_enemy->direction_y = 0.0;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = 0;
+				new_enemy->direction_y = -0.85;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+
+				new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
+				new_enemy->direction_x = -0.85;
+				new_enemy->direction_y = 0;
+				first->link = new_enemy;
+				newBullet[pos] = new_enemy->sprite;
+				pos++;
+			}
 		}
-		if (p->enemyType == ELITE) {
-			enemy* new_enemy;
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = 0.6;
-			new_enemy->direction_y = 0.6;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = 0.6;
-			new_enemy->direction_y = -0.6;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = -0.6;
-			new_enemy->direction_y = 0.6;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = -0.6;
-			new_enemy->direction_y = -0.6;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = 0;
-			new_enemy->direction_y = 0.85;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = 0.85;
-			new_enemy->direction_y = 0.0;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = 0;
-			new_enemy->direction_y = -0.85;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-
-			new_enemy = new enemy(p->x, p->y, playerX, playerY, first->link, BULLET);
-			new_enemy->direction_x = -0.85;
-			new_enemy->direction_y = 0;
-			first->link = new_enemy;
-			newBullet[pos] = new_enemy->sprite;
-			pos++;
-		}
+		
 		p = p->link;
 	}
 }
@@ -225,7 +249,9 @@ void List::generate_bullet() {
 void List::move() {
 	enemy* p = first->link;
 	while (p != last) {
-		p->move();
+		if (!p->dead) {
+			p->move();
+		}
 		p = p->link;
 	}
 }
@@ -234,10 +260,12 @@ float List::nearestDistance() {//寻找最近的敌人
 	float nearest = 99999;
 	enemy* p = first->link;
 	while (p != last) {
-		if (p->enemyType != BULLET) {
-			float d = distance(p->x, p->y, p->player_x, p->player_y);
-			if (d < nearest)
-				nearest = d;
+		if (!p->dead) {
+			if (p->enemyType != BULLET) {
+				float d = distance(p->x, p->y, p->player_x, p->player_y);
+				if (d < nearest)
+					nearest = d;
+			}
 		}
 		p = p->link;
 	}
@@ -253,12 +281,83 @@ void List::hurt(int range,int damage) {//敌人受伤
 				if (p->enemyType != BULLET) {
 					p->HP -= damage;
 					if (p->HP <= 0) {
+						p->dead = true;
 						p->sprite->setVisible(false);                  //敌人死亡
+						
+						coin* newCoin = new coin(p->x, p->y, coinFirst->link);
+						coinFirst->link = newCoin;
 					}
 					break;
 				}
 			}
 			p = p->link;
 		}
+	}
+}
+
+
+coin::coin(float x, float y, coin* next) {
+	coinX = x;
+	coinY = y;
+	collected = false;
+	newGenerated = true;
+	link = next;
+	coinSprite = Sprite::create("Enemy/coin.png");
+	coinSprite->setPosition(x, y);
+	coinSprite->setScale(1);
+}
+
+
+//拾取金币
+int List::collectCoin() {
+	for (int i = 0; i < 100; i++)
+		newCoin[i] = NULL;
+	int pos = 0;
+	int totalCoin = 0;  
+	
+	coin* p = coinFirst->link;
+	while (p != coinLast) {
+		if (!p->collected) {
+			if (p->newGenerated) {
+				p->coinSprite = Sprite::create("Enemy/coin.png");
+				p->coinSprite->setPosition(p->coinX, p->coinY);
+				p->coinSprite->setScale(1);
+				newCoin[pos] = p->coinSprite;
+				pos++;
+				p->newGenerated = false;
+			}
+			
+			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 40) {
+				totalCoin++;
+				p->coinSprite->setVisible(false);
+				p->collected = true;
+			}
+			
+		}
+		
+		p = p->link;
+	}
+	
+
+	return totalCoin;
+}
+
+
+//清屏
+void List::clear() {
+	enemy* p = first->link;
+	while (p != last) {
+		p->sprite->setVisible(false);
+		p->dead = true;
+
+		p = p->link;
+	}
+
+	coin* t = coinFirst->link;
+	while (t != coinLast) {
+		t->coinSprite->setVisible(false);
+		t->collected = true;
+
+		t = t->link;
 	}
 }

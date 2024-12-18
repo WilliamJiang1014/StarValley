@@ -22,6 +22,7 @@ public:
 
 	void playermove(float delta);
 	void playermove2(float delta);
+	void playerHurt(float delta);
 
 	void update_per_frame(float delta);
 	void update_per_second(float delta);
@@ -34,6 +35,8 @@ public:
 
 	void generate_enemy(float delta);
 	void generate_bullet(float delta);
+
+	void getCoin();
 
 	bool gameover();
 	bool dead();

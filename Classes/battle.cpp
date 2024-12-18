@@ -20,6 +20,7 @@ bool battle::init() {
 	Brotato.createPlayer();
 	this->addChild(Brotato.sprite);
 
+	//创建信息面板
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
 
@@ -67,8 +68,15 @@ bool battle::init() {
 	this->schedule(schedule_selector(battle::playermove2));
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+
+	//每帧要做的函数
 	this->schedule(schedule_selector(battle::update_per_frame));
+
+	//每秒要做的函数
 	this->schedule(schedule_selector(battle::update_per_second), 1);
+
+	//玩家受到伤害结算
+	this->schedule(schedule_selector(battle::playerHurt), 0.2);
 	
 	if (weapon1.num != 0) {
 		this->schedule(schedule_selector(battle::update_per_attack1), 1 / (Brotato.attackSpeed + weapon1.attackSpeed));
@@ -155,6 +163,8 @@ void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 
 	enemylist.update(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
 	enemylist.move();
+
+	//getCoin();
 	
 	if (weapon1.num != 0) {
 		weapon1.move(Brotato.sprite->getPositionX() - L * sqrt(3) , Brotato.sprite->getPositionY() + L);
@@ -191,13 +201,10 @@ void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 
 void battle::update_per_second(float delta) {  //所有每秒都要做的操作
 	Brotato.countdown--;
-	//Brotato.hurt(enemylist.hit_damage());
-	//Brotato.showInfo();
 }
 
 void battle::generate_enemy(float delta) {  //生成敌人
 	this->addChild(enemylist.generate_enemy());
-	//Brotato.hurt(-1);
 }
 
 void battle::generate_bullet(float delta) {
@@ -254,6 +261,27 @@ void battle::update_per_attack6(float delta) {
 	enemylist.hurt((Brotato.range + weapon6.range), (Brotato.Strength + weapon6.damage));
 }
 
+//玩家受到伤害结算
+void battle::playerHurt(float delta) {
+	Brotato.hurt(enemylist.hit_damage());
+	getCoin();
+}
+
+//拾取金币
+void battle::getCoin() {
+	Brotato.addMoney(enemylist.collectCoin());
+	Sprite* p;
+	for (int i = 0; i < 100; i++) {
+		p = enemylist.newCoin[i];
+		if (p == NULL)
+			break;
+		else {
+			this->addChild(p);
+		}
+	}
+}
+
+
 // 波结束
 bool battle::gameover() 
 {
@@ -262,6 +290,7 @@ bool battle::gameover()
 		wave++;
 		Brotato.totalTime += 10;
 		Brotato.countdown = Brotato.totalTime;
+		enemylist.clear();
 		return true;
 	}
 	else
