@@ -277,7 +277,7 @@ void List::hurt(int range,int damage) {//µĞÈËÊÜÉË
 	float nearest = nearestDistance();
 	if (nearest <= range) {
 		while (p != last) {
-			if (distance(p->x, p->y, p->player_x, p->player_y) <= nearest+10) {
+			if (distance(p->x, p->y, p->player_x, p->player_y) == nearest) {
 				if (p->enemyType != BULLET) {
 					p->HP -= damage;
 					if (p->HP <= 0) {

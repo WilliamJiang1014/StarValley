@@ -2,7 +2,6 @@
 #include "battle.h"
 #include "SimpleAudioEngine.h"
 using namespace cocos2d;
-#define L 25
 
 Layer* battle::createlayer() {
 	return Layer::create();
@@ -24,41 +23,12 @@ bool battle::init() {
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
 
+	weapon.set(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
+	set_weapon();
+
 	//bgm
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	audio->playBackgroundMusic("bgm/BGM02.wav", true);
-	
-	weapon1.select(1);
-	weapon2.select(0);
-	weapon3.select(0);
-	weapon4.select(0);
-	weapon5.select(0);
-	weapon6.select(0);
-
-	if (weapon1.num != 0) {
-		weapon1.create(Brotato.sprite->getPositionX() - L * sqrt(3) , Brotato.sprite->getPositionY() + L);
-		this->addChild(weapon1.weapon);
-	}
-	if (weapon2.num != 0) {
-		weapon2.create(Brotato.sprite->getPositionX() - L * sqrt(3) , Brotato.sprite->getPositionY() - L);
-		this->addChild(weapon1.weapon);
-	}
-	if (weapon3.num != 0) {
-		weapon3.create(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY() - 2 * L);
-		this->addChild(weapon1.weapon);
-	}
-	if (weapon4.num != 0) {
-		weapon4.create(Brotato.sprite->getPositionX() + L * sqrt(3) , Brotato.sprite->getPositionY() - L);
-		this->addChild(weapon1.weapon);
-	}
-	if (weapon5.num != 0) {
-		weapon5.create(Brotato.sprite->getPositionX() + L * sqrt(3) , Brotato.sprite->getPositionY() + L);
-		this->addChild(weapon1.weapon);
-	}
-	if (weapon6.num != 0) {
-		weapon6.create(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY() + 2 * L);
-		this->addChild(weapon1.weapon);
-	}
 
 	//创建键盘监听
 	auto listener = EventListenerKeyboard::create();
@@ -77,25 +47,12 @@ bool battle::init() {
 
 	//玩家受到伤害结算
 	this->schedule(schedule_selector(battle::playerHurt), 0.2);
-	
-	if (weapon1.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack1), 1 / (Brotato.attackSpeed + weapon1.attackSpeed));
-	}
-	if (weapon2.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack2), 1 / (Brotato.attackSpeed + weapon2.attackSpeed));
-	}
-	if (weapon3.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack3), 1 / (Brotato.attackSpeed + weapon3.attackSpeed));
-	}
-	if (weapon4.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack4), 1 / (Brotato.attackSpeed + weapon4.attackSpeed));
-	}
-	if (weapon5.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack5), 1 / (Brotato.attackSpeed + weapon5.attackSpeed));
-	}
-	if (weapon6.num != 0) {
-		this->schedule(schedule_selector(battle::update_per_attack6), 1 / (Brotato.attackSpeed + weapon6.attackSpeed));
-	}
+	this->schedule(schedule_selector(battle::update_per_attack), 1 / (Brotato.attackSpeed + weapon.attackSpeed[0]));
+	this->schedule(schedule_selector(battle::update_per_attack1), 1 / (Brotato.attackSpeed + weapon.attackSpeed[1]));
+	this->schedule(schedule_selector(battle::update_per_attack2), 1 / (Brotato.attackSpeed + weapon.attackSpeed[2]));
+	this->schedule(schedule_selector(battle::update_per_attack3), 1 / (Brotato.attackSpeed + weapon.attackSpeed[3]));
+	this->schedule(schedule_selector(battle::update_per_attack4), 1 / (Brotato.attackSpeed + weapon.attackSpeed[4]));
+	this->schedule(schedule_selector(battle::update_per_attack5), 1 / (Brotato.attackSpeed + weapon.attackSpeed[5]));
 	this->schedule(schedule_selector(battle::generate_enemy), 5);
 	this->schedule(schedule_selector(battle::generate_bullet), 4);
 
@@ -165,26 +122,11 @@ void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 	enemylist.move();
 
 	//getCoin();
-	
-	if (weapon1.num != 0) {
-		weapon1.move(Brotato.sprite->getPositionX() - L * sqrt(3) , Brotato.sprite->getPositionY() + L);
-	}
-	if (weapon2.num != 0) {
-		weapon2.move(Brotato.sprite->getPositionX() - L * sqrt(3) , Brotato.sprite->getPositionY() - L);
-	}
-	if (weapon3.num != 0) {
-		weapon3.move(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY() - 2 * L);
-	}
-	if (weapon4.num != 0) {
-		weapon4.move(Brotato.sprite->getPositionX() + L * sqrt(3) , Brotato.sprite->getPositionY() - L);
-	}
-	if (weapon5.num != 0) {
-		weapon5.move(Brotato.sprite->getPositionX() + L * sqrt(3) , Brotato.sprite->getPositionY() + L);
-	}
-	if (weapon6.num != 0) {
-		weapon6.move(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY() + 2 * L);
-	}
-	
+
+	remove_weapon();
+	weapon.upgrade(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
+	set_weapon();
+
 	/*
 	if (Brotato.dead()) {
 		auto scene_helloworld = HelloWorld::createScene();
@@ -219,49 +161,103 @@ void battle::generate_bullet(float delta) {
 	}
 }
 
-void battle::update_per_attack1(float delta) {
-	if (weapon1.isRanged == true) {
-		//发射弹幕
+void battle::set_weapon() {
+	if (weapon.num[0]) {
+		this->addChild(weapon.weapon0);
 	}
-	enemylist.hurt((Brotato.range+ weapon1.range), (Brotato.Strength + weapon1.damage));
+	if (weapon.num[1]) {
+		this->addChild(weapon.weapon1);
+	}
+	if (weapon.num[2]) {
+		this->addChild(weapon.weapon2);
+	}
+	if (weapon.num[3]) {
+		this->addChild(weapon.weapon3);
+	}
+	if (weapon.num[4]) {
+		this->addChild(weapon.weapon4);
+	}
+	if (weapon.num[5]) {
+		this->addChild(weapon.weapon5);
+	}
+}
+
+void battle::remove_weapon() {
+	if (weapon.num[0]) {
+		this->removeChild(weapon.weapon0);
+	}
+	if (weapon.num[1]) {
+		this->removeChild(weapon.weapon1);
+	}
+	if (weapon.num[2]) {
+		this->removeChild(weapon.weapon2);
+	}
+	if (weapon.num[3]) {
+		this->removeChild(weapon.weapon3);
+	}
+	if (weapon.num[4]) {
+		this->removeChild(weapon.weapon4);
+	}
+	if (weapon.num[5]) {
+		this->removeChild(weapon.weapon5);
+	}
+}
+
+void battle::update_per_attack(float delta) {
+	if (weapon.num[0]) {
+		if (weapon.isRanged[0] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[0]), (Brotato.Strength + weapon.damage[0]));
+	}
+}
+
+void battle::update_per_attack1(float delta) {
+	if (weapon.num[1]) {
+		if (weapon.isRanged[1] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[1]), (Brotato.Strength + weapon.damage[1]));
+	}
 }
 
 void battle::update_per_attack2(float delta) {
-	if (weapon2.isRanged == true) {
-		//发射弹幕
+	if (weapon.num[2]) {
+		if (weapon.isRanged[2] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[2]), (Brotato.Strength + weapon.damage[2]));
 	}
-	enemylist.hurt((Brotato.range + weapon2.range), (Brotato.Strength + weapon2.damage));
 }
 
 void battle::update_per_attack3(float delta) {
-	if (weapon3.isRanged == true) {
-		//发射弹幕
+	if (weapon.num[3]) {
+		if (weapon.isRanged[3] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[3]), (Brotato.Strength + weapon.damage[3]));
 	}
-	enemylist.hurt((Brotato.range + weapon3.range), (Brotato.Strength + weapon3.damage));
 }
 
 void battle::update_per_attack4(float delta) {
-	if (weapon4.isRanged == true) {
-		//发射弹幕
+	if (weapon.num[4]) {
+		if (weapon.isRanged[4] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[4]), (Brotato.Strength + weapon.damage[4]));
 	}
-	enemylist.hurt((Brotato.range + weapon4.range), (Brotato.Strength + weapon4.damage));
 }
 
 void battle::update_per_attack5(float delta) {
-	if (weapon5.isRanged == true) {
-		//发射弹幕
+	if (weapon.num[5]) {
+		if (weapon.isRanged[0] == true) {
+			//发射弹幕
+		}
+		enemylist.hurt((Brotato.range + weapon.range[5]), (Brotato.Strength + weapon.damage[5]));
 	}
-	enemylist.hurt((Brotato.range + weapon5.range), (Brotato.Strength + weapon5.damage));
 }
 
-void battle::update_per_attack6(float delta) {
-	if (weapon6.isRanged == true) {
-		//发射弹幕
-	}
-	enemylist.hurt((Brotato.range + weapon6.range), (Brotato.Strength + weapon6.damage));
-}
-
-//玩家受到伤害结算
+	//玩家受到伤害结算
 void battle::playerHurt(float delta) {
 	Brotato.hurt(enemylist.hit_damage());
 	getCoin();
