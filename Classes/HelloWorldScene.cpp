@@ -129,12 +129,12 @@ bool HelloWorld::init()
 
     auto background = Sprite::create("menu/background.png");
     background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-    background->setScale(3.2);
+    background->setScale(1.2);
     this->addChild(background, -2);
 
     auto title = Sprite::create("menu/logo.png");
     title->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height * 0.7 + origin.y));
-    title->setScale(2.5);
+    title->setScale(1);
     this->addChild(title, -1);
 
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
