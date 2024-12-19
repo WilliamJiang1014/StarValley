@@ -12,25 +12,16 @@ Weapon::Weapon() {
 	newbullet = NULL;
 }
 
-void Weapon::upgrade(float x, float y) {
-	create(x - L, y + L * sqrt(3), 0);
-	create1(x - 2 * L, y, 1);
-	create2(x - L, y - L * sqrt(3), 2);
-	create3(x + L, y - L * sqrt(3), 3);
-	create4(x + 2 * L, y, 4);
-	create5(x + L, y + L * sqrt(3), 5);
-}
-
 void Weapon::init(float x,float y){
 	last = new bullet(-1, -1, -1, -1, 0, NULL, 0);
 	first = new bullet(-1, -1, -1, -1, 0, last, 0);
 	num[0] = 2;
-	num[1] = 1;
+	num[1] = 2;
 	num[2] = 2;
 	num[3] = 2;
-	num[4] = 1;
+	num[4] = 2;
 	num[5] = 2;
-	upgrade(x, y);
+	create(x, y);
 }
 
 void Weapon::select_data(int i) {
@@ -75,63 +66,37 @@ Sprite* Weapon::select_image(int type) {
 	}
 }
 
-void Weapon::create(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon0 = select_image(num[i]);
-		weapon0->setPosition(x, y);
-		weapon0->setScale(1);
-	}
-}
-
-void Weapon::create1(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon1 = select_image(num[i]);
-		weapon1->setPosition(x, y);
-		weapon1->setScale(1);
-	}
-}
-
-void Weapon::create2(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon2 = select_image(num[i]);
-		weapon2->setPosition(x, y);
-		weapon2->setScale(1);
-	}
-}
-
-void Weapon::create3(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon3 = select_image(num[i]);
-		weapon3->setPosition(x, y);
-		weapon3->setScale(1);
-	}
-}
-
-void Weapon::create4(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon4 = select_image(num[i]);
-		weapon4->setPosition(x, y);
-		weapon4->setScale(1);
-	}
-}
-
-void Weapon::create5(float x, float y, int i) {
-	select_data(i);
-	if (num[i]) {
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		weapon5 = select_image(num[i]);
-		weapon5->setPosition(x, y);
-		weapon5->setScale(1);
+void Weapon::create(float x, float y) {
+	for (int i = 0; i < 6; i++) {
+		select_data(i);
+		if (num[i]) {
+			Sprite* p = select_image(num[i]);
+			weapon[i] = p;
+			switch (i) {
+			case 0:
+				weapon[i]->setPosition(x - L, y + L * sqrt(3));
+				break;
+			case 1:
+				weapon[i]->setPosition(x - 2 * L, y);
+				break;
+			case 2:
+				weapon[i]->setPosition(x - L, y - L * sqrt(3));
+				break;
+			case 3:
+				weapon[i]->setPosition(x + L, y - L * sqrt(3));
+				break;
+			case 4:
+				weapon[i]->setPosition(x + 2 * L, y);
+				break;
+			case 5:
+				weapon[i]->setPosition(x + L, y + L * sqrt(3));
+				break;
+			default:
+				weapon[i]->setPosition(x, y);
+				break;
+			}
+			weapon[i]->setScale(1);
+		}
 	}
 }
 
@@ -175,10 +140,35 @@ void Weapon::bullet_clear(bullet* k) {
 bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet* next, int i) {
 	bullet_damage = damage;
 	link = next;
-	x = X;
-	y = Y;
 	enemy_x = enemy_X;
 	enemy_y = enemy_Y;
+	bullet_s = select_bullet(i);
+	switch (i) {
+	case 0:
+		bullet_s->setPosition(X - L, Y + L * sqrt(3));
+		break;
+	case 1:
+		bullet_s->setPosition(X - 2 * L, Y);
+		break;
+	case 2:
+		bullet_s->setPosition(X - L, Y - L * sqrt(3));
+		break;
+	case 3:
+		bullet_s->setPosition(X + L, Y - L * sqrt(3));
+		break;
+	case 4:
+		bullet_s->setPosition(X + 2 * L, Y);
+		break;
+	case 5:
+		bullet_s->setPosition(X + L, Y + L * sqrt(3));
+		break;
+	default:
+		bullet_s->setPosition(X, Y);
+		break;
+	}
+	bullet_s->setScale(1);
+	x = bullet_s->getPositionX();
+	y = bullet_s->getPositionY();
 	int dx = enemy_x - x;
 	int dy = enemy_y - y;
 	if (dx == 0 && dx == 0) {
@@ -190,32 +180,7 @@ bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet
 		direction_x = dx / (sqrt(dx * dx + dy * dy));
 		direction_y = dy / (sqrt(dx * dx + dy * dy));
 	}
-	bullet_s = select_bullet(i);
-	switch (i) {
-	case0:
-		bullet_s->setPosition(x - L, y + L * sqrt(3));
-		break;
-	case1:
-		bullet_s->setPosition(x - 2 * L, y);
-		break;
-	case2:
-		bullet_s->setPosition(x - L, y - L * sqrt(3));
-		break;
-	case3:
-		bullet_s->setPosition(x + L, y - L * sqrt(3));
-		break;
-	case4:
-		bullet_s->setPosition(x + 2 * L, y);
-		break;
-	case5:
-		bullet_s->setPosition(x + L, y + L * sqrt(3));
-		break;
-	default:
-		bullet_s->setPosition(x, y);
-		break;
-	}
-	bullet_s->setScale(1);
-	
+
 }
 
 Sprite* bullet::select_bullet(int i) {
