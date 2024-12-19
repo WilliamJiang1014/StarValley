@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include "player.h"
-#include <vector>
 
 USING_NS_CC;
 
@@ -11,9 +10,7 @@ class ShopLayer : public Layer
 {
 private:
 	player* p;   // 玩家对象
-	Label* coinLabel;
 	bool end;
-	vector<Item> shopItems;
 
 public:
 	// 自定义创建场景函数，传入 player 参数

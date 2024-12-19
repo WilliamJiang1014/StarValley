@@ -1,4 +1,3 @@
-#include "cocos2d.h"
 #include "ShopLayer.h"
 #include "player.h"
 #include "ui/CocosGUI.h"
@@ -38,15 +37,6 @@ bool ShopLayer::init(player* p)
 	this->p = p;
 	end = false;
 
-	// 加载物品
-	p->loadItems();
-	srand(time(0)); // 初始化随机种子
-	while (shopItems.size() < 5)
-	{
-		int randomIndex = rand() % p->items.size();
-		Item randomItem = p->items[randomIndex];
-		shopItems.push_back(randomItem);
-	}
 	// 创建商店界面UI
 	createShopUI();
 
@@ -58,26 +48,31 @@ void ShopLayer::createShopUI()
 	auto winSize = Director::getInstance()->getWinSize();
 
 	// 显示玩家的当前金币
-	coinLabel = Label::createWithTTF("Coins: " + std::to_string(p->getMoney()), "fonts/arial.ttf", 24);
+	auto coinLabel = Label::createWithTTF("Coins: " + std::to_string(p->getMoney()), "fonts/arial.ttf", 24);
 	coinLabel->setPosition(Vec2(winSize.width / 2, winSize.height - 50));
 	this->addChild(coinLabel);
 
 	// 创建购买物品的按钮
-	for (int i = 0; i < shopItems.size(); i++)
+	for (int i = 0; i < 5; i++)
 	{
-		string itemImage = (shopItems[i].isWeapon ? "weapon/" : "Item/") + shopItems[i].name + ".png";
-		auto buyButton = ui::Button::create(itemImage, itemImage, itemImage);
-		buyButton->setTitleText(shopItems[i].name);
+		auto buyButton = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
+		buyButton->setTitleText("Item " + std::to_string(i + 1));
 		buyButton->setTitleFontSize(24);
-		buyButton->setPosition(Vec2(winSize.width / 2, winSize.height - (i + 2) * 150));
+		buyButton->setPosition(Vec2(winSize.width / 2, winSize.height - (i + 2) * 100));
 
 		buyButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type) 
 			{
 			if (type == ui::Widget::TouchEventType::ENDED) 
 			{
-				// 调用购买物品的逻辑
-				p->buyItem(shopItems[i].id);
-				coinLabel->setString("Coins: " + std::to_string(p->getMoney()));
+				// 购买物品
+				if (p->buyItem(i)) 
+				{
+					log("Item %d purchased!", i);  // 输出购买成功的日志
+				}
+				else 
+				{
+					log("Not enough coins to buy item %d", i); // 输出购买失败的日志
+				}
 			}
 			});
 		this->addChild(buyButton);
