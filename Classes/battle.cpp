@@ -23,7 +23,7 @@ bool battle::init() {
 	Brotato.createInfo();
 	this->addChild(Brotato.label);
 
-	weapon.set(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
+	weapon.init(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
 	set_weapon();
 
 	//bgm
@@ -127,6 +127,9 @@ void battle::update_per_frame(float delta) {   //ËùÓÐÃ¿Ö¡¶¼Òª×öµÄ²Ù×÷
 	weapon.upgrade(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
 	set_weapon();
 
+	weapon.bullet_move();
+	enemyhurt();
+
 	/*
 	if (Brotato.dead()) {
 		auto scene_helloworld = HelloWorld::createScene();
@@ -203,57 +206,98 @@ void battle::remove_weapon() {
 	}
 }
 
+void battle::bullet(float X, float Y, float enemy_X, float enemy_Y, int damage, int i) {
+	weapon.generate_bullet(X, Y, enemy_X, enemy_Y, damage, i);
+	Sprite* p;
+	p = weapon.newbullet;
+	if (p != NULL)
+		this->addChild(p);
+}
+
+void battle::enemyhurt() {
+	while (weapon.bullet_hit() != weapon.last) {
+		Sprite* p = weapon.bullet_hit()->bullet_s;
+		enemylist.hurt(p->getPositionX(), p->getPositionY(), 150, weapon.bullet_hit()->bullet_damage);
+		weapon.bullet_clear(weapon.bullet_hit());
+		this->removeChild(p);
+	}
+}
+
 void battle::update_per_attack(float delta) {
 	if (weapon.num[0]) {
-		if (weapon.isRanged[0] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[0])) {
+			if (weapon.isRanged[0] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(),enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()),enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(),(Brotato.range + weapon.range[0]), (Brotato.Strength + weapon.damage[0]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[0]), (Brotato.Strength + weapon.damage[0]));
 	}
 }
 
 void battle::update_per_attack1(float delta) {
 	if (weapon.num[1]) {
-		if (weapon.isRanged[1] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[1])) {
+			if (weapon.isRanged[1] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), (Brotato.range + weapon.range[1]), (Brotato.Strength + weapon.damage[1]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[1]), (Brotato.Strength + weapon.damage[1]));
 	}
 }
 
 void battle::update_per_attack2(float delta) {
 	if (weapon.num[2]) {
-		if (weapon.isRanged[2] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[2])) {
+			if (weapon.isRanged[2] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), (Brotato.range + weapon.range[2]), (Brotato.Strength + weapon.damage[2]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[2]), (Brotato.Strength + weapon.damage[2]));
 	}
 }
 
 void battle::update_per_attack3(float delta) {
 	if (weapon.num[3]) {
-		if (weapon.isRanged[3] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[3])) {
+			if (weapon.isRanged[3] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), (Brotato.range + weapon.range[3]), (Brotato.Strength + weapon.damage[3]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[3]), (Brotato.Strength + weapon.damage[3]));
 	}
 }
 
 void battle::update_per_attack4(float delta) {
 	if (weapon.num[4]) {
-		if (weapon.isRanged[4] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[4])) {
+			if (weapon.isRanged[4] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), (Brotato.range + weapon.range[4]), (Brotato.Strength + weapon.damage[4]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[4]), (Brotato.Strength + weapon.damage[4]));
 	}
 }
 
 void battle::update_per_attack5(float delta) {
 	if (weapon.num[5]) {
-		if (weapon.isRanged[0] == true) {
-			//·¢Éäµ¯Ä»
+		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[5])) {
+			if (weapon.isRanged[5] == true) {
+				bullet(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), enemylist.nearestX(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), enemylist.nearestY(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()), Brotato.Strength + weapon.damage[0], 0);//·¢Éäµ¯Ä»
+			}
+			else {
+				enemylist.hurt(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY(), (Brotato.range + weapon.range[5]), (Brotato.Strength + weapon.damage[5]));
+			}
 		}
-		enemylist.hurt((Brotato.range + weapon.range[5]), (Brotato.Strength + weapon.damage[5]));
 	}
 }
 

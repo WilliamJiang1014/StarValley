@@ -2,17 +2,21 @@
 #define __WEAPON_H__
 
 #include "cocos2d.h"
+#include "player.h"
 #include <vector>
 
 using namespace cocos2d;
 using namespace std;
 
+class bullet;
+
 class Weapon
 {
 public:
+	Weapon();
 	float x, y;
 	float player_x, player_y;
-
+	bullet* first, * last;
 	Sprite* weapon0,* weapon1,* weapon2,* weapon3,* weapon4,* weapon5;   // ÎäÆ÷¾«Áé
 	int damage[6];         // ¹¥»÷Á¦
 	float attackSpeed[6];       // ¹¥»÷ËÙ¶È£¨Ã¿Ãë¹¥»÷´ÎÊý£©
@@ -21,8 +25,8 @@ public:
 	int num[6];           // ±àºÅ
 
 	void upgrade(float x,float y);
-	void set(float x, float y);
-	void select_data(int i,int type);
+	void init(float x, float y);
+	void select_data(int i);
 	Sprite* select_image(int tpye);
 	void create(float x, float y, int i);
 	void create1(float x, float y, int i);
@@ -31,9 +35,28 @@ public:
 	void create4(float x, float y, int i);
 	void create5(float x, float y, int i);
 
-	Sprite* newbullet[99999];
-	void generate_bullet(float x, float y);
+	void generate_bullet(float X, float Y, float enemy_X, float enemy_Y,int damage,int i);
+	Sprite* newbullet;
+	void bullet_move();
+	bullet* bullet_hit();
+	void bullet_clear(bullet* k);
+};
 
+class bullet {
+	friend class Weapon;
+private:
+	Weapon weapon;
+public:
+	float x, y;
+	float enemy_x, enemy_y;
+	float direction_x, direction_y;
+	int bullet_damage;
+	bullet* link;
+	Sprite* bullet_s;
+	bullet(float X, float Y, float enemy_X, float enemy_Y, int damage, bullet* next, int i);
+	Sprite* select_bullet(int i);
+	void move();
+	bool hit();
 };
 
 #endif 

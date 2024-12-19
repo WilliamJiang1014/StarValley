@@ -58,8 +58,10 @@ public:
 	void generate_bullet();
 	void update_direction();
 	void move();
-	float nearestDistance();
-	void hurt(int range, int damage);
+	float nearestDistance(float X, float Y);
+	float nearestX(float X, float Y);
+	float nearestY(float X, float Y);
+	void hurt(float X, float Y,int range, int damage);
 
 	int collectCoin();
 

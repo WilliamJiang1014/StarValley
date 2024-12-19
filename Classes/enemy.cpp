@@ -256,13 +256,13 @@ void List::move() {
 	}
 }
 
-float List::nearestDistance() {//寻找最近的敌人
+float List::nearestDistance(float X,float Y) {//寻找最近的敌人
 	float nearest = 99999;
 	enemy* p = first->link;
 	while (p != last) {
 		if (!p->dead) {
 			if (p->enemyType != BULLET) {
-				float d = distance(p->x, p->y, p->player_x, p->player_y);
+				float d = distance(p->x, p->y, X, Y);
 				if (d < nearest)
 					nearest = d;
 			}
@@ -272,12 +272,38 @@ float List::nearestDistance() {//寻找最近的敌人
 	return nearest;
 }
 
-void List::hurt(int range,int damage) {//敌人受伤
+float List::nearestX(float X, float Y) {
 	enemy* p = first->link;
-	float nearest = nearestDistance();
+	float nearest = nearestDistance(X,Y);
+	while (p != last) {
+		if (distance(p->x, p->y,X, Y) == nearest) {
+			if (p->enemyType != BULLET) {
+				return p->x;
+			}
+		}
+		p = p->link;
+	}
+}
+
+float List::nearestY(float X, float Y) {
+	enemy* p = first->link;
+	float nearest = nearestDistance(X,Y);
+	while (p != last) {
+		if (distance(p->x, p->y, X, Y) == nearest) {
+			if (p->enemyType != BULLET) {
+				return p->y;
+			}
+		}
+		p = p->link;
+	}
+}
+
+void List::hurt(float X, float Y,int range,int damage) {//敌人受伤
+	enemy* p = first->link;
+	float nearest = nearestDistance(X,Y);
 	if (nearest <= range) {
 		while (p != last) {
-			if (distance(p->x, p->y, p->player_x, p->player_y) == nearest) {
+			if (distance(p->x, p->y, X, Y) == nearest) {
 				if (p->enemyType != BULLET) {
 					p->HP -= damage;
 					if (p->HP <= 0) {

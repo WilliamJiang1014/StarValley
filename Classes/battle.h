@@ -38,6 +38,8 @@ public:
 
 	void set_weapon();
 	void remove_weapon();
+	void bullet(float X, float Y, float enemy_X, float enemy_Y, int damage,int i);
+	void enemyhurt();
 
 	void getCoin();
 
