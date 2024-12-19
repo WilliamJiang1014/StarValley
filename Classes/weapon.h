@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "player.h"
+#include "Item.h"
 #include <vector>
 
 using namespace cocos2d;
@@ -22,12 +23,16 @@ public:
 	float attackSpeed[6];       // 攻击速度（每秒攻击次数）
 	float range[6];       // 攻击范围
 	bool isRanged[6];           // 是否为远程攻击模式
-	int num[6];           // 编号
+	int num[6];           // 编号(用于记录该武器槽是否有武器）
+	Item items[6];            // 存放武器（item）
 
 	void init(float x, float y);
 	void select_data(int i);
-	Sprite* select_image(int tpye);
+	Sprite* select_image(int i);
 	void create(float x, float y);
+
+	// 添加武器到武器槽
+	bool addWeapon(const Item& item);
 
 	void generate_bullet(float X, float Y, float enemy_X, float enemy_Y,int damage,int i);
 	Sprite* newbullet;

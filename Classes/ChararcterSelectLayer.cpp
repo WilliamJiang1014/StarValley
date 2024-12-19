@@ -21,14 +21,14 @@ bool CharacterSelectLayer::init()
 		return false;
 	}
 
-	
 	auto winSize = Director::getInstance()->getWinSize();
 
 	// 添加五个角色选择按钮
 	for (int i = 0; i < 5; i++)
 	{
 		// 创建按钮，设置正常状态、选中状态和禁用状态的图片
-		auto button = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
+		string ButtonImage = "character/character0" + to_string(i) + ".png";
+		auto button = ui::Button::create(ButtonImage);
 
 		// 设置按钮文本
 		char buttonText[16];
@@ -37,7 +37,7 @@ bool CharacterSelectLayer::init()
 		button->setTitleFontSize(24); // 设置按钮文本字体大小
 
 		// 设置按钮位置
-		button->setPosition(Vec2(winSize.width / 2, winSize.height - (i + 1) * 100));
+		button->setPosition(Vec2(winSize.width / 2, winSize.height - (i + 1) * 150));
 
 		// 添加触摸事件监听器
 		button->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type) {

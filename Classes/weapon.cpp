@@ -15,64 +15,110 @@ Weapon::Weapon() {
 void Weapon::init(float x,float y){
 	last = new bullet(-1, -1, -1, -1, 0, NULL, 0);
 	first = new bullet(-1, -1, -1, -1, 0, last, 0);
-	num[0] = 2;
-	num[1] = 2;
-	num[2] = 2;
-	num[3] = 2;
-	num[4] = 2;
-	num[5] = 2;
+
+	num[0] = 1;
+	for (int i = 1; i < 6; i++)
+	{
+		num[i] = 0;
+	}
+
+	int selectedCharacter = UserDefault::getInstance()->getIntegerForKey("SelectedCharacter", 0);
+	switch (selectedCharacter)
+	{
+	case 0:
+	case 1:
+	case 2:
+		items[0].id = 0;
+		items[0].name = "knife";
+		items[0].cost = 0;
+		items[0].health = 0;
+		items[0].strength = 100;
+		items[0].attackSpeed = 3;
+		items[0].range = 200;
+		items[0].isWeapon = true;
+		items[0].isRanged = false;
+		//items[0](0, "knife", 0, 0, 100, 3, 200, 0, true, false);
+		/*damage[0] = 10;
+		attackSpeed[0] = 1.0f;
+		range[0] = 0;
+		isRanged[0] = false;*/
+		break;
+	case 3:
+	case 4:
+		items[0].id = 1;
+		items[0].name = "gun";
+		items[0].cost = 0;
+		items[0].health = 0;
+		items[0].strength = 50;
+		items[0].attackSpeed = 10;
+		items[0].range = 500;
+		items[0].isWeapon = true;
+		items[0].isRanged = true;
+		//items[0](0, "gun", 0, 0, 50, 10, 200, 0, true, true);
+		/*damage[0] = 5;
+		attackSpeed[0] = 1.0f;
+		range[0] = 100;
+		isRanged[0] = true;*/
+		break;
+	}
+
 	create(x, y);
 }
 
-void Weapon::select_data(int i) {
-	switch (num[i]) {
-	case 0:
-		damage[i] = 0;
-		attackSpeed[i] = 1000;
-		range[i] = 0;
-		isRanged[i] = false;
-		break;
-	case 1:
-		damage[i] = 10;
-		attackSpeed[i] = 1.0f;
-		range[i] = 0;
-		isRanged[i] = false;
-		break;
-	case 2:
-		damage[i] = 5;
-		attackSpeed[i] = 1.0f;
-		range[i] = 500;
-		isRanged[i] = true;
-		break;
-	default:
-		damage[i] = 0;
-		attackSpeed[i] = 1000;
-		range[i] = 0;
-		isRanged[i] = false;
-		break;
+bool Weapon::addWeapon(const Item& item)
+{
+	// 查找空的武器槽
+	for (int i = 1; i < 6; i++)
+	{
+		if (num[i] == 0)
+		{
+			// 找到空槽，添加武器
+			num[i] = 1;
+			items[i] = item;
+			return true;
+		}
 	}
+	//// 如果没有空槽，检查是否有相同武器
+	//for (int i = 0; i < 6; i++) 
+	//{
+	//	if (num[i] == type) 
+	//	{
+	//		// 升级武器
+	//		upgradeWeapon(i);
+	//		return true;
+	//	}
+	//}
+	//// 如果武器槽已满且没有相同武器，返回失败
+	//return false;
+
+	// 如果所有槽都满且没有匹配的武器，则购买失败
+	return false;
 }
 
-Sprite* Weapon::select_image(int type) {
-	switch (type) {
-	case 0:
-		break;
-	case 1:
-		return Sprite::create("weapon/knife.png");
-	case 2:
-		return Sprite::create("weapon/gun.png");
-	default:
-		break;
-	}
+
+void Weapon::select_data(int i) {
+	// .................................................
+	damage[i] = items[i].strength;
+	attackSpeed[i] = items[i].attackSpeed;
+	range[i] = items[i].range;
+	isRanged[i] = items[i].isRanged;
+}
+
+Sprite* Weapon::select_image(int i) {
+	string weaponImage = "weapon/" + items[i].name + ".png";
+	return Sprite::create(weaponImage);
 }
 
 void Weapon::create(float x, float y) {
-	for (int i = 0; i < 6; i++) {
-		select_data(i);
-		if (num[i]) {
-			Sprite* p = select_image(num[i]);
+	for (int i = 0; i < 6; i++) 
+	{
+		if (num[i]) 
+		{
+			select_data(i);
+			Sprite* p = select_image(i);
 			weapon[i] = p;
-			switch (i) {
+			switch (i) 
+			{
 			case 0:
 				weapon[i]->setPosition(x - L, y + L * sqrt(3));
 				break;

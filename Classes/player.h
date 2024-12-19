@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 
 #include "cocos2d.h"
+#include "Item.h"
 #include <vector>
 using namespace cocos2d;
 using namespace std;
@@ -21,6 +22,10 @@ private:
 	int experience;          // 当前经验值
 	float regenCooldown;     // 生命恢复冷却时间（内部计时器）
 
+	// 购买武器
+	bool toBuyWeapon; // 用于决定是否启动battle中的武器购买函数
+	bool ifBuyWeapon; // 判断武器是否购买成功
+	Item currentItem;   // 当前选择的物品（武器）
 
 public:
 	int Strength;
@@ -32,12 +37,25 @@ public:
 	int totalTime;
 	int speed;
 
+	// 存储所有可购买的物品
+	vector<Item> items;
+	// 添加已购买物品
+	vector<Item> purchasedItems;
+	// 更新属性
+	void updateAttribute(int health, int strength, float attackSpeed, int range, float lifeRegen);
+
 	Sprite* sprite;
 	//Sprite* enemy;
 	Label* label;
 
 	void createPlayer();
 	void init();
+
+	// 加载所有物品
+	void loadItems();
+
+	// 设置玩家初始属性
+	void initPlayerAttributes();
 
 	// 设置玩家初始属性
 	void initPlayerAttributes(int characterIndex);
@@ -73,6 +91,13 @@ public:
 	int getAttackSpeed() const;
 	int getLifeRegen() const;
 	int getMoney() const;
+
+	int getCharacterIndex();
+	bool getToBuyWeapon() const;
+	Item getCurrentItem() const;
+
+	void updateToBuyWeapon();
+	void updateIfBuyWeapon();
 };
 
 #endif 

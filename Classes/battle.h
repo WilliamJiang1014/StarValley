@@ -5,6 +5,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "weapon.h"
+#include "Item.h"
 using namespace cocos2d;
 
 class battle :public Layer {
@@ -32,6 +33,12 @@ public:
 	void update_per_attack3(float delta);
 	void update_per_attack4(float delta);
 	void update_per_attack5(float delta);
+
+	// 更新已购买物品的 UI 显示
+	void updatePurchasedItemsUI();
+
+	// 购买武器
+	void purchaseWeapon(Item item);
 
 	void generate_enemy(float delta);
 	void generate_bullet(float delta);

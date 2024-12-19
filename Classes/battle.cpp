@@ -113,15 +113,66 @@ void battle::OnKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {  //撤
 	keyMap[keyCode] = false;
 }
 
+void battle::updatePurchasedItemsUI()
+{
+	// 获取窗口大小
+	auto winSize = Director::getInstance()->getWinSize();
+	auto origin = Director::getInstance()->getVisibleOrigin();
+
+	// 获取玩家对象
+	player* p = getPlayer();
+
+	// 遍历已购买物品并显示
+	for (int i = 0; i < p->purchasedItems.size(); i++)
+	{
+		string itemImage = (p->purchasedItems[i].isWeapon ? "weapon/" : "Item/") + p->purchasedItems[i].name + ".png";
+		auto itemSprite = Sprite::create(itemImage);
+
+		itemSprite->setPosition(Vec2(winSize.width - 50, winSize.height - 50 - i * 70));  // 在右侧依次排列
+		itemSprite->setScale(0.5f); // 缩小显示尺寸
+		this->addChild(itemSprite); // 将物品图标添加到当前层
+	}
+}
+
+// 处理购买武器的逻辑
+void battle::purchaseWeapon(Item item)
+{
+	// 判断武器槽是否有空位，若有空位则加入，否则升级已有的武器
+	if (weapon.addWeapon(item))
+	{
+		// 武器添加成功，标记为购买完成
+		Brotato.updateToBuyWeapon();
+		Brotato.updateIfBuyWeapon();
+
+		/*bool* ptr1 = Brotato.getIfBuyWeapon();
+		*ptr1 = false;*/
+	}
+	else
+	{
+		// 购买失败（例如，武器槽已满）
+		CCLOG("Cannot add more weapons or no matching weapon found.");
+	}
+
+}
+
+
 void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 
 	//Brotato.hurt(enemylist.hit_damage());
 	Brotato.showInfo();
 
+	// 更新已购买物品 UI ........................................................
+	updatePurchasedItemsUI();
+
 	enemylist.update(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
 	enemylist.move();
 
-	//getCoin();
+	// 检查玩家是否有武器购买请求
+	if (Brotato.getToBuyWeapon())
+	{
+		Item item = Brotato.getCurrentItem();
+		purchaseWeapon(item);
+	}
 
 	remove_weapon();
 	weapon.create(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
