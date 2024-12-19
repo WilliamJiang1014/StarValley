@@ -22,7 +22,7 @@ void player::init()
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-    totalTime = 30;
+    totalTime = 5;
     countdown = totalTime;
 	speed = 10;
 	Strength = 10;
@@ -30,18 +30,26 @@ void player::init()
 	range = 100;
 	lifeRegen = 2.0f;   // 每秒恢复2点生命
 	experience = 0;
-	money = 0;
+	money = 5000;
+
+    toBuyWeapon = false;
+    ifBuyWeapon = false;
 
     regenCooldown = 1.0f;
 
-	// 根据玩家选择初始化角色
-	int selectedCharacter = UserDefault::getInstance()->getIntegerForKey("SelectedCharacter", 0);
-	initPlayerAttributes(selectedCharacter);
+	initPlayerAttributes();
 }
 
-void player::initPlayerAttributes(int characterIndex)
+int player::getCharacterIndex()
 {
-    switch (characterIndex)
+    // 根据玩家选择初始化角色
+    int selectedCharacter = UserDefault::getInstance()->getIntegerForKey("SelectedCharacter", 0);
+    return selectedCharacter;
+}
+
+void player::initPlayerAttributes()
+{
+    switch (getCharacterIndex())
     {
     case 0: // 角色 1
         HP = 100;
@@ -139,21 +147,66 @@ bool player::gameover() {
 void player::createPlayer() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	sprite = Sprite::create("buildings/houses.png");
+
+    // 根据用户选择加载不同的角色图片
+    string playerImage;
+    switch (getCharacterIndex())
+    {
+    case 0:
+        playerImage = "character/character00.png"; // 角色1的图片
+        break;
+    case 1:
+        playerImage = "character/character01.png"; // 角色2的图片
+        break;
+    case 2:
+        playerImage = "character/character02.png"; // 角色3的图片
+        break;
+    case 3:
+        playerImage = "character/character03.png"; // 角色3的图片
+        break;
+    case 4:
+        playerImage = "character/character04.png"; // 角色3的图片
+        break;
+    default:
+        playerImage = "character/character00.png"; // 默认角色图片
+        break;
+    }
+	sprite = Sprite::create(playerImage);
 	sprite->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7));
-	sprite->setScale(2.5);
+	sprite->setScale(1);
 	init();
 }
 
-void player::createInfo() {
+void player::createInfo()
+{
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown) + "\n"+"Money: " + to_string(money), "fonts/Marker Felt.ttf", 40);
-	label->setPosition(Vec2(origin.x + visibleSize.width * 0.05, origin.y + visibleSize.height * 0.9));
+
+    // 创建标签内容
+	label = Label::createWithTTF("HP: " + to_string(HP) + "\n" +
+        "Level: " + to_string(Level) + "\n" + 
+        "Time: " + to_string(countdown) + "\n"+
+        "Money: " + to_string(money) + "\n\n\n" + 
+        "FULLHP: " + to_string(FULLHP) + "\n" +
+        "Strength: " + to_string(Strength) + "\n" +
+        "AttackSpeed: " + to_string(attackSpeed) + "\n" + 
+        "Range: " + to_string(range) + "\n" + 
+        "LifeRegen: " + to_string(lifeRegen), 
+        "fonts/Marker Felt.ttf", 40);
+
+	label->setPosition(Vec2(origin.x + visibleSize.width * 0.1, origin.y + visibleSize.height * 0.7));
 }
 
 void player::showInfo() {
-	label->setString("HP: " + to_string(HP) + "\n" + "Level: " + to_string(Level) + "\n" + "Time: " + to_string(countdown)+ "\n" + "Money: " + to_string(money));
+	label->setString("HP: " + to_string(HP) + "\n" +
+        "Level: " + to_string(Level) + "\n" +
+        "Time: " + to_string(countdown) + "\n" +
+        "Money: " + to_string(money) + "\n\n\n" +
+        "FULLHP: " + to_string(FULLHP) + "\n" +
+        "Strength: " + to_string(Strength) + "\n" +
+        "AttackSpeed: " + to_string(attackSpeed) + "\n" +
+        "Range: " + to_string(range) + "\n" +
+        "LifeRegen: " + to_string(lifeRegen));
 }
 
 void player::hurt(int total_damage) {
@@ -194,37 +247,45 @@ void player::levelUp()
     HP = FULLHP; // 升级恢复生命
 }
 
+void player::loadItems()
+{
+    items.push_back(Item(0, "knife", 100, 0, 100, 3.0f, 200, 0.0f, true, false));  // 物品ID 0
+    items.push_back(Item(1, "gun", 100, 0, 50, 10.0f, 500, 0.0f, true, true));  // 物品ID 1
+    items.push_back(Item(2, "bandana_icon", 150, 0, 0, 0.1f, 0, 0.0f));  // 物品ID 2
+    items.push_back(Item(3, "acid_icon", 200, 0, 0, 0.0f, 10, 0.0f));  // 物品ID 3
+    items.push_back(Item(4, "adrenaline_icon", 250, 0, 0, 0.0f, 0, 1.0f));  // 物品ID 4
+}
+
+void player::updateAttribute(int health, int strength, float attackSpeed_, int range_, float lifeRegen_)
+{
+    FULLHP += health;
+    Strength += strength;
+    attackSpeed += attackSpeed_;
+    range += range_;
+    lifeRegen += lifeRegen_;
+}
+
 bool player::buyItem(int itemId)
 {
-    const int itemCost[] = { 50, 100, 150, 200, 250 };
+    Item item = items[itemId]; // 获取物品
 
-    if (itemId < 0 || itemId >= sizeof(itemCost) / sizeof(int)) return false;
-
-    if (money >= itemCost[itemId])
+    if (money >= item.cost)
     {
-        money -= itemCost[itemId];
-        switch (itemId)
+        if (item.isWeapon)
         {
-        case 0:
-            FULLHP += 10;
-            HP += 10;
-            break;
-        case 1:
-            Strength += 5;
-            break;
-        case 2:
-            attackSpeed += 0.1f;
-            break;
-        case 3:
-            range += 10;
-            break;
-        case 4:
-            lifeRegen += 1.0f;
-            break;
-        default:
-            break;
+            toBuyWeapon = true;
+            currentItem = item;  // 保存当前选中的武器
+
         }
-        return true;
+        else {
+            // 常规物品，更新玩家属性
+            updateAttribute(item.health, item.strength, item.attackSpeed, item.range, item.lifeRegen);
+            purchasedItems.push_back(item);  // 将物品添加到已购买的列表中
+            money -= item.cost; // 扣除金币
+            return true;
+        }
+
+        //money -= item.cost; // 扣除金币 ......................
     }
     return false;
 }
@@ -232,3 +293,19 @@ bool player::buyItem(int itemId)
 int player::getAttackSpeed() const { return attackSpeed; }
 int player::getLifeRegen() const { return lifeRegen; }
 int player::getMoney() const { return money; }
+bool player::getToBuyWeapon() const { return toBuyWeapon; }
+Item player::getCurrentItem() const { return currentItem; }  // 获取当前选中的物品
+
+void player::updateIfBuyWeapon()
+{
+    ifBuyWeapon = !ifBuyWeapon;
+}
+void player::updateToBuyWeapon()
+{
+    toBuyWeapon = !toBuyWeapon;
+}
+
+//bool* player::getIfBuyWeapon() { return &ifBuyWeapon; }
+//bool* player::getToBuyWeapon() { return &toBuyWeapon; }
+
+

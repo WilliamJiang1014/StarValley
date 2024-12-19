@@ -2,7 +2,11 @@
 #define __WEAPON_H__
 
 #include "cocos2d.h"
+<<<<<<< Updated upstream
 #include "player.h"
+=======
+#include "Item.h"
+>>>>>>> Stashed changes
 #include <vector>
 
 using namespace cocos2d;
@@ -22,19 +26,33 @@ public:
 	float attackSpeed[6];       // 攻击速度（每秒攻击次数）
 	float range[6];       // 攻击范围
 	bool isRanged[6];           // 是否为远程攻击模式
-	int num[6];           // 编号
+	int num[6];           // 编号(用于记录该武器槽是否有武器）
+	Item items[6];            // 存放武器（item）
 
+<<<<<<< Updated upstream
 	void init(float x, float y);
+=======
+	void upgrade(float x,float y);
+	void set(float x, float y);
+>>>>>>> Stashed changes
 	void select_data(int i);
 	Sprite* select_image(int tpye);
 	void create(float x, float y);
 
+<<<<<<< Updated upstream
 	void generate_bullet(float X, float Y, float enemy_X, float enemy_Y,int damage,int i);
 	Sprite* newbullet;
 	void bullet_move();
 	bullet* bullet_hit();
 	void bullet_clear(bullet* k);
 };
+=======
+	// 添加武器到武器槽
+	bool addWeapon(const Item& item);
+
+	Sprite* newbullet[99999];
+	void generate_bullet(float x, float y);
+>>>>>>> Stashed changes
 
 class bullet {
 	friend class Weapon;

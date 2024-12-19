@@ -353,7 +353,7 @@ int List::collectCoin() {
 				p->newGenerated = false;
 			}
 			
-			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 40) {
+			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 100) {
 				totalCoin++;
 				p->coinSprite->setVisible(false);
 				p->collected = true;
