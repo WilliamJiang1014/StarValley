@@ -22,7 +22,7 @@ void player::init()
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-    totalTime = 20;
+    totalTime = 10;
     countdown = totalTime;
 	speed = 10;
 	Strength = 10;
@@ -285,11 +285,9 @@ bool player::buyItem(int itemId)
             // 常规物品，更新玩家属性
             updateAttribute(item.health, item.strength, item.attackSpeed, item.range, item.lifeRegen);
             purchasedItems.push_back(item);  // 将物品添加到已购买的列表中
-            money -= item.cost; // 扣除金币
-            return true;
         }
-
-        //money -= item.cost; // 扣除金币 ......................
+        money -= item.cost; // 扣除金币
+        return true;
     }
     return false;
 }

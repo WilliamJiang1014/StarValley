@@ -15,6 +15,8 @@ private:
 	bool end;
 	vector<Item> shopItems;
 
+	vector<bool> itemPurchased;    // 当前商店中物品的购买状态
+
 public:
 	// 自定义创建场景函数，传入 player 参数
 	static Scene* createScene(player* p);

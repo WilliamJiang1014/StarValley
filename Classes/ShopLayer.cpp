@@ -41,11 +41,26 @@ bool ShopLayer::init(player* p)
 	// 加载物品
 	p->loadItems();
 	srand(time(0)); // 初始化随机种子
+
+	bool weaponAdded = false; // 用于标记是否已经添加了武器
 	while (shopItems.size() < 5)
 	{
 		int randomIndex = rand() % p->items.size();
 		Item randomItem = p->items[randomIndex];
+
+		// 检查是否已添加过武器
+		if (randomItem.isWeapon && weaponAdded)
+		{
+			continue; // 如果已经有武器了，跳过该物品
+		}
+
 		shopItems.push_back(randomItem);
+
+		// 如果是武器，更新标记
+		if (randomItem.isWeapon)
+		{
+			weaponAdded = true;
+		}
 	}
 
 	// 创建商店界面UI
@@ -79,6 +94,11 @@ void ShopLayer::createShopUI()
 					// 调用购买物品的逻辑
 					p->buyItem(shopItems[i].id);
 					coinLabel->setString("Coins: " + std::to_string(p->getMoney()));
+
+					// 更新按钮状态
+					buyButton->setEnabled(false);
+					buyButton->setColor(Color3B(128, 128, 128)); // 使图片变暗
+					buyButton->setTitleText("Sold");
 				}
 			});
 		this->addChild(buyButton);
