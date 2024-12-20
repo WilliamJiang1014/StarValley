@@ -211,6 +211,10 @@ void player::showInfo() {
 
 void player::hurt(int total_damage) {
 	HP -= total_damage;
+    if (total_damage > 0)
+        sprite->setColor(Color3B::RED);
+    else
+        sprite->setColor(Color3B::WHITE);
 }
 
 void player::addMoney(int amount)

@@ -347,6 +347,40 @@ void battle::getCoin() {
 }
 
 
+//停止所有函数运行
+void battle::stopSchedule() {
+	this->unschedule(schedule_selector(battle::update_per_frame));
+	this->unschedule(schedule_selector(battle::update_per_second));
+	this->unschedule(schedule_selector(battle::playerHurt));
+	this->unschedule(schedule_selector(battle::update_per_attack));
+	this->unschedule(schedule_selector(battle::update_per_attack1));
+	this->unschedule(schedule_selector(battle::update_per_attack2));
+	this->unschedule(schedule_selector(battle::update_per_attack3));
+	this->unschedule(schedule_selector(battle::update_per_attack4));
+	this->unschedule(schedule_selector(battle::update_per_attack5));
+	this->unschedule(schedule_selector(battle::generate_enemy));
+	this->unschedule(schedule_selector(battle::generate_bullet));
+}
+
+//开始所有函数运行
+void battle::startSchedule() {
+	this->schedule(schedule_selector(battle::update_per_frame));
+
+	//每秒要做的函数
+	this->schedule(schedule_selector(battle::update_per_second), 1);
+
+	//玩家受到伤害结算
+	this->schedule(schedule_selector(battle::playerHurt), 0.2);
+	this->schedule(schedule_selector(battle::update_per_attack), 1 / (Brotato.attackSpeed + weapon.attackSpeed[0]));
+	this->schedule(schedule_selector(battle::update_per_attack1), 1 / (Brotato.attackSpeed + weapon.attackSpeed[1]));
+	this->schedule(schedule_selector(battle::update_per_attack2), 1 / (Brotato.attackSpeed + weapon.attackSpeed[2]));
+	this->schedule(schedule_selector(battle::update_per_attack3), 1 / (Brotato.attackSpeed + weapon.attackSpeed[3]));
+	this->schedule(schedule_selector(battle::update_per_attack4), 1 / (Brotato.attackSpeed + weapon.attackSpeed[4]));
+	this->schedule(schedule_selector(battle::update_per_attack5), 1 / (Brotato.attackSpeed + weapon.attackSpeed[5]));
+	this->schedule(schedule_selector(battle::generate_enemy), 5);
+	this->schedule(schedule_selector(battle::generate_bullet), 4);
+}
+
 // 波结束
 bool battle::gameover() 
 {
@@ -356,6 +390,7 @@ bool battle::gameover()
 		Brotato.totalTime += 10;
 		Brotato.countdown = Brotato.totalTime;
 		enemylist.clear();
+		stopSchedule();
 		return true;
 	}
 	else

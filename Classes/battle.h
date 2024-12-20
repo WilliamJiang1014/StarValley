@@ -51,6 +51,8 @@ public:
 	void getCoin();
 
 	bool gameover();
+	void stopSchedule();
+	void startSchedule();
 	bool dead();
 
 	int totalOver();

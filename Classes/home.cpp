@@ -125,6 +125,7 @@ void home::endShop(float delta)
 	{
 		this->removeChild(shopLayer);
 		b->setVisible(true);
+		b->startSchedule();
 
 		this->unschedule(schedule_selector(home::endShop));
 		this->schedule(schedule_selector(home::endWave));

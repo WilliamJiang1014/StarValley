@@ -34,15 +34,15 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 	player_y = playerY;
 	direction_x = -1;
 	direction_y = -1;
-	damage = 1;
-	HP = 5;
-	speed = 3;
 	link = l;
 	enemyType = Type;
 
 	//生成敌人sprite
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	if (enemyType == FIGHTER) {
+		HP = 1000;
+		damage = 2;
+		speed = 5;
 		x = rand() % int(visibleSize.width);
 		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/bruiser.png");
@@ -50,6 +50,9 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 		sprite->setScale(1);
 	}
 	else if (enemyType == ARCHER) {
+		HP = 1000;
+		damage = 1;
+		speed = 2;
 		x = rand() % int(visibleSize.width);
 		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/baby_alien.png");
@@ -57,6 +60,9 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 		sprite->setScale(1);
 	}
 	else if (enemyType == ELITE) {
+		HP = 2000;
+		damage = 1;
+		speed = 2;
 		x = rand() % int(visibleSize.width);
 		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/buffer.png");
@@ -64,6 +70,9 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 		sprite->setScale(1);
 	}
 	else {
+		HP = 1;
+		damage = 1;
+		speed = 4;
 		sprite = Sprite::create("enemy/archerBullet.png");
 		sprite->setPosition(myX, myY);
 		sprite->setScale(1);
@@ -301,11 +310,13 @@ float List::nearestY(float X, float Y) {
 void List::hurt(float X, float Y,int range,int damage) {//敌人受伤
 	enemy* p = first->link;
 	float nearest = nearestDistance(X,Y);
+	
 	if (nearest <= range) {
 		while (p != last) {
 			if (distance(p->x, p->y, X, Y) == nearest) {
 				if (p->enemyType != BULLET) {
 					p->HP -= damage;
+					//p->sprite->setColor(Color3B::RED);
 					if (p->HP <= 0) {
 						p->dead = true;
 						p->sprite->setVisible(false);                  //敌人死亡
