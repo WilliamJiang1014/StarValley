@@ -28,7 +28,7 @@ bool battle::init() {
 
 	//bgm
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->playBackgroundMusic("bgm/BGM02.wav", true);
+	audio->playBackgroundMusic("bgm/battle.wav", true);
 
 	//´´½¨¼üÅÌ¼àÌı
 	auto listener = EventListenerKeyboard::create();

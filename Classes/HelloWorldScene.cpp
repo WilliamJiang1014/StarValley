@@ -138,7 +138,7 @@ bool HelloWorld::init()
     this->addChild(title, -1);
 
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-    audio->playBackgroundMusic("bgm/BGM04.wav", true);
+    audio->playBackgroundMusic("bgm/helloworld.wav", true);
 
 
     return true;
