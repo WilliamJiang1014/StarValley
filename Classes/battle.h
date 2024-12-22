@@ -14,6 +14,8 @@ private:
 	player Brotato;
 	List enemylist;
 	Weapon weapon;
+	bool killTenFlag;
+	Label* achieve;
 	std::map<EventKeyboard::KeyCode, bool> keyMap;
 public:
 	Layer* createlayer();
@@ -54,6 +56,8 @@ public:
 	void stopSchedule();
 	void startSchedule();
 	bool dead();
+
+	void achievement(float delta);
 
 	int totalOver();
 

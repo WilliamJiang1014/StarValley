@@ -26,11 +26,11 @@ void player::init()
     countdown = totalTime;
 	speed = 10;
 	Strength = 10;
-	attackSpeed = 2.0f; // 每秒攻击次数
-	range = 100;
+	attackSpeed = 0; // 每秒攻击次数
+	range = 0;
 	lifeRegen = 2.0f;   // 每秒恢复2点生命
 	experience = 0;
-	money = 5000;
+	money = 0;
 
     toBuyItem = true;
     toBuyWeapon = false;
@@ -56,48 +56,48 @@ void player::initPlayerAttributes()
         HP = 100;
         Strength = 10;
         speed = 15;
-        attackSpeed = 1.0f;
-        range = 100.0f;
+        //attackSpeed = 1.0f;
+        //range = 100.0f;
         lifeRegen = 5.0f;
         break;
     case 1: // 角色 2
         HP = 120;
         Strength = 8;
         speed = 8;
-        attackSpeed = 1.2f;
-        range = 120.0f;
+        //attackSpeed = 1.2f;
+        //range = 120.0f;
         lifeRegen = 3.0f;
         break;
     case 2: // 角色 3
         HP = 80;
         Strength = 15;
         speed = 13;
-        attackSpeed = 0.8f;
-        range = 80.0f;
+        //attackSpeed = 0.8f;
+        //range = 80.0f;
         lifeRegen = 2.0f;
         break;
     case 3: // 角色 4
         HP = 150;
         Strength = 5;
         speed = 10;
-        attackSpeed = 1.5f;
-        range = 150.0f;
+        //attackSpeed = 1.5f;
+        //range = 150.0f;
         lifeRegen = 10.0f;
         break;
     case 4: // 角色 5
         HP = 90;
         Strength = 12;
         speed = 5;
-        attackSpeed = 1.1f;
-        range = 90.0f;
+        //attackSpeed = 1.1f;
+        //range = 90.0f;
         lifeRegen = 4.0f;
         break;
     default:
         HP = 100;
         Strength = 10;
         speed = 15;
-        attackSpeed = 1.0f;
-        range = 100.0f;
+        //attackSpeed = 1.0f;
+        //range = 100.0f;
         lifeRegen = 5.0f;
         break;
     }
@@ -245,8 +245,8 @@ void player::addExperience(int exp)
 void player::levelUp()
 {
     Level++;
-    FULLHP += 20;
-    Strength += 5;
+    FULLHP += 5;
+    Strength += 1;
     attackSpeed += 0.1f;
     HP = FULLHP; // 升级恢复生命
 }
@@ -267,20 +267,20 @@ void player::loadItems()
     items.push_back(Item(12, "big_arms_icon", 35, 0, 0, 0, 100, 0.0f));
     items.push_back(Item(13, "black_belt_icon", 15, 10, 0, 0, 0, 0.0f));
     items.push_back(Item(14, "blood_donation_icon", 25, 0, 8, 0, 0, 0.0f));
-    items.push_back(Item(15, "bowler_hat_icon", 45, 0, 15, 0.05f, 5, 0.0f));
+    items.push_back(Item(15, "bowler_hat_icon", 45, 0, 5, 0.05f, 5, 0.0f));
     items.push_back(Item(16, "boxing_glove_icon", 45, 0, 0, 0.1f, 0, 0.0f));
     items.push_back(Item(17, "butterfly_icon", 55, 0, 0, 0.1f, 0, 0.0f));
     items.push_back(Item(18, "cake_icon", 25, 0, 0, 0, 3, 0.0f));
     items.push_back(Item(19, "chameleon_icon", 20, 0, 2, 0, 0, 0.0f));
     items.push_back(Item(20, "anvil_icon", 30, 0, 0, 0, 0, 0.0f));
 
-    items.push_back(Item(21, "cactus_mace", 30, 0, 25, 0.1f, 200, 0.0f, true, false));
-    items.push_back(Item(22, "chopper", 30, 0, 50, 0.2f, 200, 0.0f, true, false));
-    items.push_back(Item(23, "claw", 30, 0, 30, 0.15f, 200, 0.0f, true, false));
-    items.push_back(Item(24, "double_barrel_shotgun", 30, 0, 70, 0.05f, 800, 0.0f, true, true));
-    items.push_back(Item(25, "medical_gun", 30, 0, 50, 0.1f, 800, 5.0f, true, true));
-    items.push_back(Item(26, "minigun", 30, 0, 100, 0.2f, 800, 0.0f, true, true));
-    items.push_back(Item(27, "revolver", 30, 0, 60, 0.15f, 800, 0.0f, true, true));
+    items.push_back(Item(21, "cactus_mace", 30, 0, 50, 0.5, 200, 0.0f, true, false));
+    items.push_back(Item(22, "chopper", 30, 0, 25, 1.5, 200, 0.0f, true, false));
+    items.push_back(Item(23, "claw", 30, 0, 30, 1, 200, 0.0f, true, false));
+    items.push_back(Item(24, "double_barrel_shotgun", 30, 0, 90, 0.3, 800, 0.0f, true, true));
+    items.push_back(Item(25, "medical_gun", 30, 0, 15, 1, 800, 5.0f, true, true));
+    items.push_back(Item(26, "minigun", 30, 0, 5, 2, 800, 0.0f, true, true));
+    items.push_back(Item(27, "revolver", 30, 0, 50, 0.5, 800, 0.0f, true, true));
 }
 
 void player::updateAttribute(int health, int strength, float attackSpeed_, int range_, float lifeRegen_)

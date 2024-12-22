@@ -32,8 +32,8 @@ void Weapon::init(float x,float y){
 		items[0].name = "chopper";
 		items[0].cost = 30;
 		items[0].health = 0;
-		items[0].strength = 30;
-		items[0].attackSpeed = 0.15f;
+		items[0].strength = 25;
+		items[0].attackSpeed = 1.5f;
 		items[0].range = 200;
 		items[0].isWeapon = true;
 		items[0].isRanged = false;
@@ -44,9 +44,9 @@ void Weapon::init(float x,float y){
 		items[0].name = "medical_gun";
 		items[0].cost = 30;
 		items[0].health = 0;
-		items[0].strength = 50;
-		items[0].attackSpeed = 0.1f;
-		items[0].range = 500;
+		items[0].strength = 15;
+		items[0].attackSpeed = 1;
+		items[0].range = 800;
 		items[0].isWeapon = true;
 		items[0].isRanged = true;
 		break;

@@ -16,9 +16,11 @@ int randType() {
 	srand(time(0));
 	int enemyType;
 	int r = rand() % 10;
-	if (r >= 0 && r <= 0)
+	if (r >= 0 && r <= 1)
 		enemyType = FIGHTER;
-	else if (r >= 1 && r <= 3)
+	else if (r >= 2 && r <= 3)
+		enemyType = BUTCHER;
+	else if (r >= 4 && r <= 7)
 		enemyType = ARCHER;
 	else
 		enemyType = ELITE;
@@ -40,17 +42,27 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 	//生成敌人sprite
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	if (enemyType == FIGHTER) {
-		HP = 1000;
-		damage = 2;
-		speed = 5;
+		HP = 100;
+		damage = 5;
+		speed = 4;
 		x = rand() % int(visibleSize.width);
 		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/bruiser.png");
 		sprite->setPosition(x, y);
 		sprite->setScale(1);
 	}
+	else if (enemyType == BUTCHER) {
+		HP = 60;
+		damage = 8;
+		speed = 6;
+		x = rand() % int(visibleSize.width);
+		y = rand() % int(visibleSize.height);
+		sprite = Sprite::create("enemy/butcher.png");
+		sprite->setPosition(x, y);
+		sprite->setScale(1);
+	}
 	else if (enemyType == ARCHER) {
-		HP = 1000;
+		HP = 50;
 		damage = 1;
 		speed = 2;
 		x = rand() % int(visibleSize.width);
@@ -60,7 +72,7 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 		sprite->setScale(1);
 	}
 	else if (enemyType == ELITE) {
-		HP = 2000;
+		HP = 75;
 		damage = 1;
 		speed = 2;
 		x = rand() % int(visibleSize.width);
@@ -71,7 +83,7 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 	}
 	else {
 		HP = 1;
-		damage = 1;
+		damage = 3;
 		speed = 4;
 		sprite = Sprite::create("enemy/archerBullet.png");
 		sprite->setPosition(myX, myY);
@@ -91,6 +103,7 @@ List::List() {
 	first = new enemy(-1, -1, -1, -1, last, -1);
 	coinLast = new coin(-1, -1, NULL);
 	coinFirst = new coin(-1, -1, coinLast);
+	deadNum = 0;
 	for (int i = 0; i < 100; i++)
 		newBullet[i] = NULL;
 	for (int i = 0; i < 100; i++)
@@ -154,7 +167,7 @@ int List::hit_damage() {  //计算对玩家造成的伤害
 	enemy* p = first->link;
 	while (p != last) {
 		if (!p->dead) {
-			if (p->enemyType == FIGHTER || p->enemyType == BULLET) {
+			if (p->enemyType == FIGHTER || p->enemyType == BUTCHER||p->enemyType == BULLET) {
 				if (distance(p->x, p->y, p->player_x, p->player_y) < 60) {
 					total_damage += p->damage;
 					//p->sprite->setVisible(false);
@@ -319,6 +332,7 @@ void List::hurt(float X, float Y,int range,int damage) {//敌人受伤
 					//p->sprite->setColor(Color3B::RED);
 					if (p->HP <= 0) {
 						p->dead = true;
+						deadNum++;
 						p->sprite->setVisible(false);                  //敌人死亡
 						
 						coin* newCoin = new coin(p->x, p->y, coinFirst->link);
@@ -364,8 +378,8 @@ int List::collectCoin() {
 				p->newGenerated = false;
 			}
 			
-			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 40) {
-				totalCoin++;
+			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 100) {
+				totalCoin += 8;
 				p->coinSprite->setVisible(false);
 				p->collected = true;
 			}
@@ -397,4 +411,11 @@ void List::clear() {
 
 		t = t->link;
 	}
+}
+
+bool List::killTen() {
+	if (deadNum == 10)
+		return true;
+	else
+		return false;
 }

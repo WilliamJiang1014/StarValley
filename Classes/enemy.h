@@ -8,6 +8,7 @@ using namespace cocos2d;
 #define ARCHER 2
 #define ELITE 3
 #define BULLET 4
+#define BUTCHER 5
 
 class List;
 
@@ -46,6 +47,7 @@ private:
 	enemy* first, * last;
 	coin* coinFirst, * coinLast;
 	float playerX, playerY;
+	int deadNum;
 public:
 	List();
 	void update(float x, float y);
@@ -62,6 +64,8 @@ public:
 	float nearestX(float X, float Y);
 	float nearestY(float X, float Y);
 	void hurt(float X, float Y,int range, int damage);
+
+	bool killTen();
 
 	int collectCoin();
 

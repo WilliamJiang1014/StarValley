@@ -15,6 +15,8 @@ bool battle::init() {
 	}
 	int wave = 1;
 
+	killTenFlag = true;
+
 	//创建玩家角色
 	Brotato.createPlayer();
 	this->addChild(Brotato.sprite);
@@ -29,6 +31,11 @@ bool battle::init() {
 	//bgm
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	audio->playBackgroundMusic("bgm/battle.wav", true);
+
+	achieve = Label::createWithTTF("Achievent:\nYou have killed ten enemies!!", "fonts/arial.ttf", 36);
+	achieve->setPosition(1600, 100);
+	achieve->setVisible(false);
+	this->addChild(achieve);
 
 	//创建键盘监听
 	auto listener = EventListenerKeyboard::create();
@@ -53,8 +60,10 @@ bool battle::init() {
 	this->schedule(schedule_selector(battle::update_per_attack3), 1 / (Brotato.attackSpeed + weapon.attackSpeed[3]));
 	this->schedule(schedule_selector(battle::update_per_attack4), 1 / (Brotato.attackSpeed + weapon.attackSpeed[4]));
 	this->schedule(schedule_selector(battle::update_per_attack5), 1 / (Brotato.attackSpeed + weapon.attackSpeed[5]));
-	this->schedule(schedule_selector(battle::generate_enemy), 5);
+	this->schedule(schedule_selector(battle::generate_enemy), 2);
 	this->schedule(schedule_selector(battle::generate_bullet), 4);
+	
+	this->schedule(schedule_selector(battle::achievement), 4);
 
 	return true;
 }
@@ -203,6 +212,8 @@ void battle::update_per_second(float delta) {  //所有每秒都要做的操作
 	Brotato.countdown--;
 }
 
+
+
 void battle::generate_enemy(float delta) {  //生成敌人
 	this->addChild(enemylist.generate_enemy());
 }
@@ -338,7 +349,9 @@ void battle::playerHurt(float delta) {
 
 //拾取金币
 void battle::getCoin() {
-	Brotato.addMoney(enemylist.collectCoin());
+	int t = enemylist.collectCoin();
+	Brotato.addMoney(t);
+	Brotato.addExperience(t * 3);
 	Sprite* p;
 	for (int i = 0; i < 100; i++) {
 		p = enemylist.newCoin[i];
@@ -381,7 +394,7 @@ void battle::startSchedule() {
 	this->schedule(schedule_selector(battle::update_per_attack3), 1 / (Brotato.attackSpeed + weapon.attackSpeed[3]));
 	this->schedule(schedule_selector(battle::update_per_attack4), 1 / (Brotato.attackSpeed + weapon.attackSpeed[4]));
 	this->schedule(schedule_selector(battle::update_per_attack5), 1 / (Brotato.attackSpeed + weapon.attackSpeed[5]));
-	this->schedule(schedule_selector(battle::generate_enemy), 5);
+	this->schedule(schedule_selector(battle::generate_enemy), 2);
 	this->schedule(schedule_selector(battle::generate_bullet), 4);
 }
 
@@ -430,4 +443,18 @@ player* battle::getPlayer()
 {
 	player* p = &Brotato;
 	return p;
+}
+
+void battle::achievement(float delta) {
+	if (killTenFlag) {
+		if (enemylist.killTen()) {
+			achieve->setVisible(true);
+			killTenFlag = false;
+		}
+	}
+	else {
+		achieve->setVisible(false);
+		this->unschedule(schedule_selector(battle::achievement));
+	}
+	
 }
