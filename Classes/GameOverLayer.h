@@ -8,6 +8,7 @@ class GameOverLayer : public Layer
 {
 private:
     bool end;
+    int killNum;
 
 public:
     static Scene* createScene(int playerWon);
@@ -15,6 +16,7 @@ public:
     virtual bool init(int playerWon);
 
     bool toEnd();
+    void showInfo(int n);
 };
 
 #endif

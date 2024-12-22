@@ -23,6 +23,11 @@ bool CharacterSelectLayer::init()
 
 	auto winSize = Director::getInstance()->getWinSize();
 
+	auto background = Sprite::create("menu/background.png");
+	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	background->setScale(1.2);
+	this->addChild(background, -2);
+
 	// 添加五个角色选择按钮
 	for (int i = 0; i < 5; i++)
 	{

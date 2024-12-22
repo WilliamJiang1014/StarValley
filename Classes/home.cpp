@@ -33,55 +33,7 @@ bool home::init() {  //主函数
 	background->setScale(1.2);
 	this->addChild(background, -2);
 
-	//b = battle::create();
-	//this->addChild(b);
-	//this->schedule(schedule_selector(home::test));
-
-	//Layer* layer_battle = battle::createlayer();
-	//this->addChild(layer_battle);
-
-
-	/*
-	//获取窗口大小
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	//创建玩家角色
 	
-	Brotato.createPlayer();
-	this->addChild(Brotato.sprite);
-
-	//Brotato.test();
-	//this->addChild(Brotato.enemy);
-
-	Brotato.createInfo();
-	this->addChild(Brotato.label);
-
-	battle = Layer::create();
-	battle->addChild(Brotato.sprite);
-	battle->addChild(Brotato.label);
-	this->addChild(battle);
-
-	//bgm
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->playBackgroundMusic("bgm/BGM02.wav", true);
-
-
-	//创建键盘监听
-	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = CC_CALLBACK_2(home::OnKeyPressed, this);
-	listener->onKeyReleased = CC_CALLBACK_2(home::OnKeyReleased, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
-	//每一帧调用一次角色移动函数
-	this->schedule(schedule_selector(home::playermove));
-	this->schedule(schedule_selector(home::playermove2));
-	this->schedule(schedule_selector(home::test, 7));
-	this->schedule(schedule_selector(home::update_per_frame));
-	this->schedule(schedule_selector(home::update_per_second), 1);
-	this->schedule(schedule_selector(home::generate_enemy), 5);
-	*/
 	return true;
 }
 
@@ -103,9 +55,10 @@ void home::endWave(float delta)
 {
 	if (b->totalOver() != 0)
 	{
-		this->removeChild(b);
 		gameOverLayer = GameOverLayer::create(b->totalOver());
 		this->addChild(gameOverLayer);
+		gameOverLayer->showInfo(b->getKillNum());
+		this->removeChild(b);
 		this->unschedule(schedule_selector(home::endWave));
 		this->schedule(schedule_selector(home::retryGame));
 	}

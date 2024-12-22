@@ -60,6 +60,7 @@ public:
 	void achievement(float delta);
 
 	int totalOver();
+	int getKillNum() const { return enemylist.getDeadNum(); }
 
 	// »ñÈ¡
 	player* getPlayer();

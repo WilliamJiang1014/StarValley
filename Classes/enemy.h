@@ -71,6 +71,8 @@ public:
 	int collectCoin();
 
 	void clear();
+
+	int getDeadNum() const { return deadNum; }
 };
 
 

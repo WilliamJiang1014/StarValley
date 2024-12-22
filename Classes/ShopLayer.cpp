@@ -82,6 +82,11 @@ void ShopLayer::createShopUI()
 	infoLabel->setPosition(Vec2(960, winSize.height - 100));  // 设置标签位置为左上角
 	this->addChild(infoLabel);
 
+	auto background = Sprite::create("menu/background.png");
+	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	background->setScale(1.2);
+	this->addChild(background, -2);
+
 	// 创建购买物品的按钮
 	for (int i = 0; i < shopItems.size(); i++)
 	{
@@ -100,7 +105,8 @@ void ShopLayer::createShopUI()
 		label->setPosition(Vec2(startX + i * buttonSpacing, winSize.height - 400 - buyButton->getContentSize().height / 2 - 30)); 
 
 		// 创建标签，显示装备的属性加成
-		string attributesText = "Health: " + std::to_string(shopItems[i].health) +
+		string attributesText = "Cost: " + std::to_string(shopItems[i].cost) +
+			"\nHealth: " + std::to_string(shopItems[i].health) +
 			"\nStrength: " + std::to_string(shopItems[i].strength) +
 			"\nAttack Speed: " + std::to_string(shopItems[i].attackSpeed) +
 			"\nRange: " + std::to_string(shopItems[i].range) +
