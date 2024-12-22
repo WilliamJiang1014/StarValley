@@ -54,6 +54,7 @@ bool battle::init() {
 
 	//玩家受到伤害结算
 	this->schedule(schedule_selector(battle::playerHurt), 0.2);
+	this->schedule(schedule_selector(battle::white), 0.5);
 	this->schedule(schedule_selector(battle::update_per_attack), 1 / (Brotato.attackSpeed + weapon.attackSpeed[0]));
 	this->schedule(schedule_selector(battle::update_per_attack1), 1 / (Brotato.attackSpeed + weapon.attackSpeed[1]));
 	this->schedule(schedule_selector(battle::update_per_attack2), 1 / (Brotato.attackSpeed + weapon.attackSpeed[2]));
@@ -263,6 +264,10 @@ void battle::enemyhurt() {
 	}
 }
 
+void battle::white(float delta) {
+	enemylist.white();
+}
+
 void battle::update_per_attack(float delta) {
 	if (weapon.num[0]) {
 		if (enemylist.nearestDistance(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY()) <= (Brotato.range + weapon.range[0])) {
@@ -421,7 +426,7 @@ int battle::totalOver()
 	{
 		return -1;
 	}
-	else if (wave == 10) // 战斗结束
+	else if (wave == 2) // 战斗结束
 	{
 		return 1;
 	}

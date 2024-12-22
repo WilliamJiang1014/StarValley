@@ -28,7 +28,7 @@ bool home::init() {  //主函数
 	//背景设定
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto background = Sprite::create("menu/background.png");
+	auto background = Sprite::create("background.png");
 	background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	background->setScale(1.2);
 	this->addChild(background, -2);

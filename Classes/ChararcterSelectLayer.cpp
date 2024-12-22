@@ -40,7 +40,7 @@ bool CharacterSelectLayer::init()
 		// 创建标签显示按钮的文本
 		char buttonText[16];
 		sprintf(buttonText, "Character %d", i + 1);
-		auto label = Label::createWithTTF(buttonText, "fonts/Marker Felt.ttf", 24);
+		auto label = Label::createWithTTF(buttonText, "fonts/Marker Felt.ttf", 50);
 		label->setPosition(Vec2(startX + i * buttonSpacing, winSize.height / 2 - button->getContentSize().height / 2 - 30)); // 设置标签在按钮下方
 
 		// 添加触摸事件监听器
@@ -60,10 +60,10 @@ bool CharacterSelectLayer::init()
 		this->addChild(label);
 	}
 
-	//// 创建左上角的功能信息标签
-	//auto infoLabel = Label::createWithTTF("初始人物选择", "fonts/Marker Felt.ttf", 24);
-	//infoLabel->setPosition(Vec2(50, winSize.height - 50));  // 设置标签位置为左上角
-	//this->addChild(infoLabel);
+	// 创建左上角的功能信息标签
+	auto infoLabel = Label::createWithTTF("Character Select", "fonts/Marker Felt.ttf", 100);
+	infoLabel->setPosition(Vec2(960, winSize.height - 100));  // 设置标签位置为左上角
+	this->addChild(infoLabel);
 
 	return true;
 }

@@ -64,6 +64,7 @@ public:
 	float nearestX(float X, float Y);
 	float nearestY(float X, float Y);
 	void hurt(float X, float Y,int range, int damage);
+	void white();
 
 	bool killTen();
 

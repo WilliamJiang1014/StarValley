@@ -54,7 +54,7 @@ enemy::enemy(float myX, float myY, float playerX, float playerY, enemy* l, int T
 	else if (enemyType == BUTCHER) {
 		HP = 60;
 		damage = 8;
-		speed = 6;
+		speed = 5;
 		x = rand() % int(visibleSize.width);
 		y = rand() % int(visibleSize.height);
 		sprite = Sprite::create("enemy/butcher.png");
@@ -329,7 +329,7 @@ void List::hurt(float X, float Y,int range,int damage) {//敌人受伤
 			if (distance(p->x, p->y, X, Y) == nearest) {
 				if (p->enemyType != BULLET) {
 					p->HP -= damage;
-					//p->sprite->setColor(Color3B::RED);
+					p->sprite->setColor(Color3B::RED);
 					if (p->HP <= 0) {
 						p->dead = true;
 						deadNum++;
@@ -346,6 +346,17 @@ void List::hurt(float X, float Y,int range,int damage) {//敌人受伤
 	}
 }
 
+void List::white() {
+	enemy* p = first->link;
+	while (p != last) {
+		if (!p->dead) {
+			if (p->enemyType != BULLET) {
+				p->sprite->setColor(Color3B::WHITE);
+			}
+		}
+		p = p->link;
+	}
+}
 
 coin::coin(float x, float y, coin* next) {
 	coinX = x;
@@ -379,7 +390,7 @@ int List::collectCoin() {
 			}
 			
 			if (distance(p->coinSprite->getPositionX(), p->coinSprite->getPositionY(), playerX, playerY) <= 100) {
-				totalCoin += 8;
+				totalCoin += 4;
 				p->coinSprite->setVisible(false);
 				p->collected = true;
 			}

@@ -55,7 +55,7 @@ void player::initPlayerAttributes()
     case 0: // 角色 1
         HP = 100;
         Strength = 10;
-        speed = 15;
+        speed = 12;
         //attackSpeed = 1.0f;
         //range = 100.0f;
         lifeRegen = 5.0f;
@@ -63,23 +63,23 @@ void player::initPlayerAttributes()
     case 1: // 角色 2
         HP = 120;
         Strength = 8;
-        speed = 8;
+        speed = 10;
         //attackSpeed = 1.2f;
         //range = 120.0f;
         lifeRegen = 3.0f;
         break;
     case 2: // 角色 3
         HP = 80;
-        Strength = 15;
-        speed = 13;
+        Strength = 12;
+        speed = 15;
         //attackSpeed = 0.8f;
         //range = 80.0f;
         lifeRegen = 2.0f;
         break;
     case 3: // 角色 4
         HP = 150;
-        Strength = 5;
-        speed = 10;
+        Strength = 8;
+        speed = 8;
         //attackSpeed = 1.5f;
         //range = 150.0f;
         lifeRegen = 10.0f;
@@ -87,7 +87,7 @@ void player::initPlayerAttributes()
     case 4: // 角色 5
         HP = 90;
         Strength = 12;
-        speed = 5;
+        speed = 10;
         //attackSpeed = 1.1f;
         //range = 90.0f;
         lifeRegen = 4.0f;
@@ -95,7 +95,7 @@ void player::initPlayerAttributes()
     default:
         HP = 100;
         Strength = 10;
-        speed = 15;
+        speed = 10;
         //attackSpeed = 1.0f;
         //range = 100.0f;
         lifeRegen = 5.0f;

@@ -52,8 +52,8 @@ public:
 	int bullet_damage;
 	bullet* link;
 	Sprite* bullet_s;
-	bullet(float X, float Y, float enemy_X, float enemy_Y, int damage, bullet* next, int i);
-	Sprite* select_bullet(int i);
+	bullet(float X, float Y, float enemy_X, float enemy_Y, int damage, bullet* next, int i,int id);
+	Sprite* select_bullet(int i,int id);
 	void move();
 	bool hit();
 };

@@ -13,8 +13,8 @@ Weapon::Weapon() {
 }
 
 void Weapon::init(float x,float y){
-	last = new bullet(-1, -1, -1, -1, 0, NULL, 0);
-	first = new bullet(-1, -1, -1, -1, 0, last, 0);
+	last = new bullet(-1, -1, -1, -1, 0, NULL, 0,0);
+	first = new bullet(-1, -1, -1, -1, 0, last, 0,0);
 
 	num[0] = 1;
 	for (int i = 1; i < 6; i++)
@@ -137,7 +137,7 @@ void Weapon::create(float x, float y) {
 }
 
 void Weapon::generate_bullet(float X, float Y, float enemy_X, float enemy_Y, int damage, int i) {
-	bullet* new_bullet = new bullet(X, Y, enemy_X, enemy_Y, damage, first->link, i);
+	bullet* new_bullet = new bullet(X, Y, enemy_X, enemy_Y, damage, first->link, i,items[i].id);
 	first->link = new_bullet;
 	newbullet = new_bullet->bullet_s;
 }
@@ -173,12 +173,12 @@ void Weapon::bullet_clear(bullet* k) {
 	}
 }
 
-bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet* next, int i) {
+bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet* next, int i,int id) {
 	bullet_damage = damage;
 	link = next;
 	enemy_x = enemy_X;
 	enemy_y = enemy_Y;
-	bullet_s = select_bullet(i);
+	bullet_s = select_bullet(i,id);
 	switch (i) {
 	case 0:
 		bullet_s->setPosition(X - L, Y + L * sqrt(3));
@@ -219,30 +219,30 @@ bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet
 
 }
 
-Sprite* bullet::select_bullet(int i) {
+Sprite* bullet::select_bullet(int i,int id) {
 	Sprite* bulletSprite = nullptr;
 
-	if (weapon.items[i].id == 24) {
+	if (id == 24) {
 		bulletSprite = Sprite::create("weapon/bullet_shredder_0000.png");
+		bulletSprite->setScale(0.5f);
 	}
-	else if (weapon.items[i].id == 25) {
+	else if (id == 25) {
 		bulletSprite = Sprite::create("weapon/bullet_medical.png");
 	}
-	else if (weapon.items[i].id == 26) {
+	else if (id == 26) {
 		bulletSprite = Sprite::create("weapon/frame0001.png");
 	}
 	else {
-		bulletSprite = Sprite::create("weapon/bullet_shredder_0000.png");
+		bulletSprite = Sprite::create("weapon/bullet_gun.png");
 	}
 	// 调整弹幕精灵的大小为原来的 0.5 倍
-	bulletSprite->setScale(0.5f);
 
 	return bulletSprite;
 }
 
 void bullet::move() {
-	bullet_s->setPositionX(bullet_s->getPositionX() + 15 * direction_x);
-	bullet_s->setPositionY(bullet_s->getPositionY() + 15 * direction_y);
+	bullet_s->setPositionX(bullet_s->getPositionX() + 20 * direction_x);
+	bullet_s->setPositionY(bullet_s->getPositionY() + 20 * direction_y);
 }
 
 bool bullet::hit() {
