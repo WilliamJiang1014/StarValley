@@ -125,7 +125,7 @@ void battle::updatePurchasedItemsUI()
 	// 遍历已购买物品并显示
 	for (int i = 0; i < p->purchasedItems.size(); i++)
 	{
-		string itemImage = (p->purchasedItems[i].isWeapon ? "weapon/" : "Item/") + p->purchasedItems[i].name + ".png";
+		string itemImage = (p->purchasedItems[i].isWeapon ? "weapon/" : "Item/") + p->purchasedItems[i].name + (p->purchasedItems[i].isWeapon ? "_icon.png" : ".png");
 		auto itemSprite = Sprite::create(itemImage);
 
 		itemSprite->setPosition(Vec2(winSize.width - 50, winSize.height - 50 - i * 70));  // 在右侧依次排列
@@ -161,8 +161,12 @@ void battle::update_per_frame(float delta) {   //所有每帧都要做的操作
 	//Brotato.hurt(enemylist.hit_damage());
 	Brotato.showInfo();
 
-	// 更新已购买物品 UI ........................................................
-	updatePurchasedItemsUI();
+	// 更新已购买物品 UI 
+	if(Brotato.toBuyItem)
+	{
+		updatePurchasedItemsUI();
+		Brotato.toBuyItem = false;
+	}
 
 	enemylist.update(Brotato.sprite->getPositionX(), Brotato.sprite->getPositionY());
 	enemylist.move();

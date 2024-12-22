@@ -29,15 +29,19 @@ bool CharacterSelectLayer::init()
 		// 创建按钮，设置正常状态、选中状态和禁用状态的图片
 		string ButtonImage = "character/character0" + to_string(i) + ".png";
 		auto button = ui::Button::create(ButtonImage);
-
-		// 设置按钮文本
-		char buttonText[16];
-		sprintf(buttonText, "Character %d", i + 1);
-		button->setTitleText(buttonText);
-		button->setTitleFontSize(24); // 设置按钮文本字体大小
+		button->setScale(1.0f); // 可根据需要调整按钮的大小
 
 		// 设置按钮位置
-		button->setPosition(Vec2(winSize.width / 2, winSize.height - (i + 1) * 150));
+		float buttonSpacing = 300; // 按钮间距，可以根据需要调整
+		float totalWidth = buttonSpacing * (5 - 1); // 总间距：按钮间距 * (按钮数 - 1)
+		float startX = (winSize.width - totalWidth) / 2; // 起始X坐标，确保按钮居中
+		button->setPosition(Vec2(startX + i * buttonSpacing, winSize.height / 2));
+		
+		// 创建标签显示按钮的文本
+		char buttonText[16];
+		sprintf(buttonText, "Character %d", i + 1);
+		auto label = Label::createWithTTF(buttonText, "fonts/Marker Felt.ttf", 24);
+		label->setPosition(Vec2(startX + i * buttonSpacing, winSize.height / 2 - button->getContentSize().height / 2 - 30)); // 设置标签在按钮下方
 
 		// 添加触摸事件监听器
 		button->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type) {
@@ -52,7 +56,15 @@ bool CharacterSelectLayer::init()
 
 		// 将按钮添加到当前层
 		this->addChild(button);
+		// 将标签添加到当前层
+		this->addChild(label);
 	}
+
+	//// 创建左上角的功能信息标签
+	//auto infoLabel = Label::createWithTTF("初始人物选择", "fonts/Marker Felt.ttf", 24);
+	//infoLabel->setPosition(Vec2(50, winSize.height - 50));  // 设置标签位置为左上角
+	//this->addChild(infoLabel);
+
 	return true;
 }
 

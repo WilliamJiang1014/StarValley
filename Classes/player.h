@@ -37,6 +37,7 @@ public:
 	int totalTime;
 	int speed;
 
+	bool toBuyItem;
 	// 存储所有可购买的物品
 	vector<Item> items;
 	// 添加已购买物品

@@ -28,37 +28,27 @@ void Weapon::init(float x,float y){
 	case 0:
 	case 1:
 	case 2:
-		items[0].id = 0;
-		items[0].name = "knife";
-		items[0].cost = 0;
+		items[0].id = 22;
+		items[0].name = "chopper";
+		items[0].cost = 30;
 		items[0].health = 0;
-		items[0].strength = 100;
-		items[0].attackSpeed = 3;
+		items[0].strength = 30;
+		items[0].attackSpeed = 0.15f;
 		items[0].range = 200;
 		items[0].isWeapon = true;
 		items[0].isRanged = false;
-		//items[0](0, "knife", 0, 0, 100, 3, 200, 0, true, false);
-		/*damage[0] = 10;
-		attackSpeed[0] = 1.0f;
-		range[0] = 0;
-		isRanged[0] = false;*/
 		break;
 	case 3:
 	case 4:
-		items[0].id = 1;
-		items[0].name = "gun";
-		items[0].cost = 0;
+		items[0].id = 25;
+		items[0].name = "medical_gun";
+		items[0].cost = 30;
 		items[0].health = 0;
 		items[0].strength = 50;
-		items[0].attackSpeed = 10;
+		items[0].attackSpeed = 0.1f;
 		items[0].range = 500;
 		items[0].isWeapon = true;
 		items[0].isRanged = true;
-		//items[0](0, "gun", 0, 0, 50, 10, 200, 0, true, true);
-		/*damage[0] = 5;
-		attackSpeed[0] = 1.0f;
-		range[0] = 100;
-		isRanged[0] = true;*/
 		break;
 	}
 
@@ -230,12 +220,24 @@ bullet::bullet(float X, float Y, float enemy_X, float enemy_Y,int damage, bullet
 }
 
 Sprite* bullet::select_bullet(int i) {
-	if (weapon.num[i] == 2) {
-		return Sprite::create("weapon/bullet_gun.png");
+	Sprite* bulletSprite = nullptr;
+
+	if (weapon.items[i].id == 24) {
+		bulletSprite = Sprite::create("weapon/bullet_shredder_0000.png");
+	}
+	else if (weapon.items[i].id == 25) {
+		bulletSprite = Sprite::create("weapon/bullet_medical.png");
+	}
+	else if (weapon.items[i].id == 26) {
+		bulletSprite = Sprite::create("weapon/frame0001.png");
 	}
 	else {
-		return Sprite::create("weapon/bullet_gun.png");
+		bulletSprite = Sprite::create("weapon/bullet_shredder_0000.png");
 	}
+	// 调整弹幕精灵的大小为原来的 0.5 倍
+	bulletSprite->setScale(0.5f);
+
+	return bulletSprite;
 }
 
 void bullet::move() {

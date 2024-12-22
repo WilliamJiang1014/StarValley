@@ -22,16 +22,17 @@ void player::init()
 	FULLHP = init_FULLHP;
 	HP = init_FULLHP;
 	Level = 1;
-    totalTime = 10;
+    totalTime = 20;
     countdown = totalTime;
 	speed = 10;
 	Strength = 10;
-	attackSpeed = 1.0f; // 每秒攻击次数
+	attackSpeed = 2.0f; // 每秒攻击次数
 	range = 100;
 	lifeRegen = 2.0f;   // 每秒恢复2点生命
 	experience = 0;
 	money = 5000;
 
+    toBuyItem = true;
     toBuyWeapon = false;
     ifBuyWeapon = false;
 
@@ -135,7 +136,6 @@ bool player::dead()
 	else
 		return false;
 }
-
 
 bool player::gameover() {
 	if (countdown <= 0)
@@ -253,11 +253,34 @@ void player::levelUp()
 
 void player::loadItems()
 {
-    items.push_back(Item(0, "knife", 100, 0, 100, 3.0f, 200, 0.0f, true, false));  // 物品ID 0
-    items.push_back(Item(1, "gun", 100, 0, 50, 10.0f, 500, 0.0f, true, true));  // 物品ID 1
-    items.push_back(Item(2, "bandana_icon", 150, 0, 0, 0.1f, 0, 0.0f));  // 物品ID 2
-    items.push_back(Item(3, "acid_icon", 200, 0, 0, 0.0f, 10, 0.0f));  // 物品ID 3
-    items.push_back(Item(4, "adrenaline_icon", 250, 0, 0, 0.0f, 0, 1.0f));  // 物品ID 4
+    items.push_back(Item(1, "acid_icon", 15, 8, 0, -0.02f, 0, 0.0f));  
+    items.push_back(Item(2, "adrenaline_icon", 30, 0, 0, 0.05f, 0, 0.0f)); 
+    items.push_back(Item(3, "alien_baby_icon", 20, 15, 0, 0, 0, 0.0f)); 
+    items.push_back(Item(4, "alien_magic_icon", 20, 0, 3, 0, 0, 0.0f));
+    items.push_back(Item(5, "alien_tongue_icon", 25, 8, 0, 0, 3, 0.0f));
+    items.push_back(Item(6, "alien_worm_icon", 25, 0, 0, 0, 0, 1.0f));
+    items.push_back(Item(7, "ball_and_chain_icon", 15, 3, 0, 0, 2, 0.0f));
+    items.push_back(Item(8, "bandana_icon", 30, 0, 3, 0, 0, 0.0f));
+    items.push_back(Item(9, "banner_icon", 50, 0, 0, 0, 50, 5.0f));
+    items.push_back(Item(10, "bat_icon", 22, 0, 0, 0.1, 0, 0.0f));
+    items.push_back(Item(11, "bean_teacher_icon", 18, 0, 3, 0.1, 0, 0.0f));
+    items.push_back(Item(12, "big_arms_icon", 35, 0, 0, 0, 100, 0.0f));
+    items.push_back(Item(13, "black_belt_icon", 15, 10, 0, 0, 0, 0.0f));
+    items.push_back(Item(14, "blood_donation_icon", 25, 0, 8, 0, 0, 0.0f));
+    items.push_back(Item(15, "bowler_hat_icon", 45, 0, 15, 0.05f, 5, 0.0f));
+    items.push_back(Item(16, "boxing_glove_icon", 45, 0, 0, 0.1f, 0, 0.0f));
+    items.push_back(Item(17, "butterfly_icon", 55, 0, 0, 0.1f, 0, 0.0f));
+    items.push_back(Item(18, "cake_icon", 25, 0, 0, 0, 3, 0.0f));
+    items.push_back(Item(19, "chameleon_icon", 20, 0, 2, 0, 0, 0.0f));
+    items.push_back(Item(20, "anvil_icon", 30, 0, 0, 0, 0, 0.0f));
+
+    items.push_back(Item(21, "cactus_mace", 30, 0, 25, 0.1f, 200, 0.0f, true, false));
+    items.push_back(Item(22, "chopper", 30, 0, 50, 0.2f, 200, 0.0f, true, false));
+    items.push_back(Item(23, "claw", 30, 0, 30, 0.15f, 200, 0.0f, true, false));
+    items.push_back(Item(24, "double_barrel_shotgun", 30, 0, 70, 0.05f, 800, 0.0f, true, true));
+    items.push_back(Item(25, "medical_gun", 30, 0, 50, 0.1f, 800, 5.0f, true, true));
+    items.push_back(Item(26, "minigun", 30, 0, 100, 0.2f, 800, 0.0f, true, true));
+    items.push_back(Item(27, "revolver", 30, 0, 60, 0.15f, 800, 0.0f, true, true));
 }
 
 void player::updateAttribute(int health, int strength, float attackSpeed_, int range_, float lifeRegen_)
@@ -271,7 +294,7 @@ void player::updateAttribute(int health, int strength, float attackSpeed_, int r
 
 bool player::buyItem(int itemId)
 {
-    Item item = items[itemId]; // 获取物品
+    Item item = items[itemId - 1]; // 获取物品
 
     if (money >= item.cost)
     {
@@ -284,9 +307,11 @@ bool player::buyItem(int itemId)
         else {
             // 常规物品，更新玩家属性
             updateAttribute(item.health, item.strength, item.attackSpeed, item.range, item.lifeRegen);
-            purchasedItems.push_back(item);  // 将物品添加到已购买的列表中
         }
         money -= item.cost; // 扣除金币
+        purchasedItems.push_back(item);  // 将物品添加到已购买的列表中
+        toBuyItem = true;
+
         return true;
     }
     return false;
